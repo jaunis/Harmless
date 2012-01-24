@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Harmless
-Bundle-SymbolicName: Harmless
+Bundle-SymbolicName: Harmless;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: harmless.Activator
 Require-Bundle: org.eclipse.ui,
