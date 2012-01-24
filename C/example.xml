@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<peripherals>
+		<peripheral name="PORTA">
+			<register id="DDRA"  size="8" address="0x1" description="Data direction register A"/>
+			<register id="PINA"  size="8" address="0x0" description="Port Input A"/>
+			<register id="PORTA" size="8" address="0x2" description="Port Output A"/>
+		</peripheral>
+		<peripheral name="USART">
+			<register id="UCSR0A" size="8" description="USART0 Control and Status register A">
+				<slice id="RXC0"  description="USART0 Receive Complete">            <range from="7" to="7"></range></slice>
+				<slice id="TXC0"  description="USART0 Transmit Complete">           <range from="6" to="6"></range></slice>
+				<slice id="UDRE0" description="USART0 Data Register Empty">         <range from="5" to="5"></range></slice>
+				<slice id="FEN0"  description="USART0 Frame Error">                 <range from="4" to="4"></range></slice>
+				<slice id="DOR0"  description="USART0 Data OverRun">                <range from="3" to="3"></range></slice>
+				<slice id="UPEN0" description="USART0 Parity Error">                <range from="2" to="2"></range></slice>
+				<slice id="U2X0"  description="Double the USART0 Tranmission speed"><range from="1" to="1"></range></slice>
+				<slice id="MPCM0" description="Multi-Processor Communication Mode"> <range from="0" to="0"></range></slice>
+			</register>
+			<register id="UCSR0C" size="8" description="USART0 Control and Status register C">
+				<slice id="-" readOnly="true">                           <range from="7" to="7"></range></slice>
+				<slice id="UMSEL0" description="USART0 Mode select">     <range from="6" to="6"></range></slice>
+				<slice id="UPM"    description="USART0 Parity Mode">
+					<range from="5" to="4"></range>
+					<item val="0" description="disable"></item>
+					<item val="1" description="reserved"></item>
+					<item val="2" description="enabled, odd parity"></item>
+					<item val="3" description="enabled, even parity"></item>
+				</slice>
+				<slice id="USBS0"  description="USART0 Stop Bit Select"> <range from="3" to="3"></range></slice>
+				<slice id="UCSZ0"  description="USART0 Character size">  <range from="2" to="1"></range></slice>
+				<slice id="UCPOL0" description="USART0 Clock Polarity">  <range from="0" to="0"></range></slice>
+			</register>
+		</peripheral>
+	</peripherals>
+
+
+
+	<site>
+	   <description url="http://gnuarmeclipse.sourceforge.net/updates">
+		  GNU ARM Eclipse Plug-in Update Site
+	   </description>
+	   <feature url="features/org.eclipse.cdt.cross.arm.gnu_0.5.3.201010141144.jar" id="org.eclipse.cdt.cross.arm.gnu" version="0.5.3.201010141144" os="linux,macosx,win32">
+		  <category name="org.eclipse.cdt.cross.gnu"/>
+	   </feature>
+	   <category-def name="org.eclipse.cdt.cross.gnu" label="CDT GNU Cross Development Tools">
+		  <description>
+			 CDT GNU Cross Development Tools
+		  </description>
+	   </category-def>
+	</site>
+</root>
