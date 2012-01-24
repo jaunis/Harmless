@@ -5,8 +5,6 @@ Bundle-SymbolicName: Harmless
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: harmless.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
