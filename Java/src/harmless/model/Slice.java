@@ -133,7 +133,17 @@ public class Slice {
 	public void addRange(Range r)
 	{
 		//TODO méthode à tester car un peu complexe
-		List<Bit> aInserer = registre.getListeBits().subList(r.getTo(), r.getFrom());
+		List<Bit> aInserer = null;
+		try
+		{
+			aInserer = registre.getListeBits().subList(r.getTo(), r.getFrom());
+		}
+		catch(IndexOutOfBoundsException e)
+		{
+			System.err.println("liste de bits du registre " + registre.getId() + 
+					" mal initialisée.\n");
+			e.printStackTrace();
+		}
 		Bit premier = aInserer.get(0);
 		
 		Comparator<Bit> comp = new Comparator<Bit>(){

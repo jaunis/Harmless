@@ -48,7 +48,7 @@ public class Activator extends AbstractUIPlugin {
 		Scanner sc = new Scanner(System.in);
 		int port = Integer.parseInt(sc.nextLine());
 		chargeur = new Chargeur("localhost", port);
-		listePeripheriques = chargeur.initialiserPeripheriques();
+		//listePeripheriques = chargeur.initialiserPeripheriques();
 	}
 
 	/*
