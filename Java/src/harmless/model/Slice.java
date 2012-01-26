@@ -4,6 +4,7 @@
 package harmless.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -21,6 +22,18 @@ public class Slice {
 	private List<Range> listeRanges;
 	private Register registre;
 	private Hashtable<Integer, String> items;
+	
+	public Slice(String id, String description,	Register registre) 
+	{
+		super();
+		this.id = id;
+		this.description = description;
+		this.registre = registre;
+		readOnly = false;
+		items = new Hashtable<Integer, String>();
+		listeBits = new ArrayList<Bit>();
+		listeRanges = new ArrayList<Range>();
+	}
 	/**
 	 * @return the id
 	 */
@@ -106,19 +119,6 @@ public class Slice {
 		this.items = items;
 	}
 	
-	public Slice(String id, String description, List<Range> listeRanges,
-			Register registre) {
-		super();
-		this.id = id;
-		this.description = description;
-		this.listeRanges = listeRanges;
-		this.registre = registre;
-		readOnly = false;
-		items = new Hashtable<Integer, String>();
-		listeBits = new ArrayList<Bit>();
-		listeRanges = new ArrayList<Range>();
-	}
-	
 	public void addItem(Integer valeur, String sens)
 	{
 		items.put(valeur, sens);
@@ -132,7 +132,49 @@ public class Slice {
 	
 	public void addRange(Range r)
 	{
-		//TODO méthode à coder: ajouter aussi les bits correspondant
+		//TODO méthode à tester car un peu complexe
+		List<Bit> aInserer = registre.getListeBits().subList(r.getTo(), r.getFrom());
+		Bit premier = aInserer.get(0);
+		
+		Comparator<Bit> comp = new Comparator<Bit>(){
+			@Override
+			public int compare(Bit o1, Bit o2) {
+				List<Bit> listeBits = Slice.this.registre.getListeBits();
+				int i1 = listeBits.indexOf(o1);
+				int i2 = listeBits.indexOf(o2);
+				if(i1 < i2) return -1;
+				else if (i1 > i2) return 1;
+				else return 0;
+			}
+		};
+		
+		//on cherche à quel indice insérer dans la liste de bits
+		int indiceInsertion = 0;
+		Bit bitCourant = listeBits.get(indiceInsertion);
+		while(comp.compare(premier, bitCourant) < 0)
+		{
+			indiceInsertion++;
+			try
+			{
+				bitCourant = listeBits.get(indiceInsertion);
+			}
+			catch(IndexOutOfBoundsException e)
+			{
+				System.err.println("liste de bits du registre " + registre.getId() + 
+						" mal initialisée.\n");
+				e.printStackTrace();
+			}
+		}
+		
+		/* 
+		 * Pour insérer il faut tout décaler.
+		 * on recopie listeBits à partir de indiceInsertion jusqu'à la fin
+		 * puis on insère les nouveaux bits à indiceInsertion
+		 * puis on remet au bout les bits recopiés
+		 */
+		List<Bit> finListeBits = listeBits.subList(indiceInsertion, listeBits.size()-1);
+		listeBits.addAll(indiceInsertion, aInserer);
+		listeBits.addAll(indiceInsertion + aInserer.size(), finListeBits);
 	}
 	
 	public String toString()

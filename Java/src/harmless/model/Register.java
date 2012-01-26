@@ -111,4 +111,17 @@ public class Register {
 		return res;
 	}
 	
+	public void addBit(Bit b)
+	{
+		listeBits.add(b);
+	}
+	public void addBit(int position, Bit b)
+	{
+		listeBits.add(position, b);
+	}
+	
+	public void addSlice(Slice s)
+	{
+		listeSlices.add(s);
+	}
 }

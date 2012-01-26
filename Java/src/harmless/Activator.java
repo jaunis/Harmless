@@ -1,5 +1,11 @@
 package harmless;
 
+import harmless.controller.Chargeur;
+import harmless.model.Peripheral;
+
+import java.util.List;
+import java.util.Scanner;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -13,7 +19,17 @@ public class Activator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static Activator plugin;
+	private Chargeur chargeur;
+	private List<Peripheral> listePeripheriques;
 	
+	public Chargeur getChargeur() {
+		return chargeur;
+	}
+
+	public List<Peripheral> getListePeripheriques() {
+		return listePeripheriques;
+	}
+
 	/**
 	 * The constructor
 	 */
@@ -27,6 +43,12 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		//TODO il faudra sans doute faire un truc plus propre pour récupérer le port
+		System.out.println("Veuillez entrer le port d'écoute:");
+		Scanner sc = new Scanner(System.in);
+		int port = Integer.parseInt(sc.nextLine());
+		chargeur = new Chargeur("localhost", port);
+		listePeripheriques = chargeur.initialiserPeripheriques();
 	}
 
 	/*
