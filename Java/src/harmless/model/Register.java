@@ -17,6 +17,7 @@ public class Register {
 	private List<Slice> listeSlices;
 	private List<Bit> listeBits;
 	private Peripheral peripherique;
+	private int size;
 	
 	
 	public Register(Peripheral peripherique, String id, String description, int size)

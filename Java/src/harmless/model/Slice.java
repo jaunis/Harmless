@@ -136,7 +136,7 @@ public class Slice {
 		List<Bit> aInserer = null;
 		try
 		{
-			aInserer = registre.getListeBits().subList(r.getTo(), r.getFrom());
+			aInserer = registre.getListeBits().subList(r.getTo(), r.getFrom()+1);
 		}
 		catch(IndexOutOfBoundsException e)
 		{
@@ -158,33 +158,41 @@ public class Slice {
 			}
 		};
 		
-		//on cherche à quel indice insérer dans la liste de bits
-		int indiceInsertion = 0;
-		Bit bitCourant = listeBits.get(indiceInsertion);
-		while(comp.compare(premier, bitCourant) < 0)
-		{
-			indiceInsertion++;
-			try
-			{
-				bitCourant = listeBits.get(indiceInsertion);
-			}
-			catch(IndexOutOfBoundsException e)
-			{
-				System.err.println("liste de bits du registre " + registre.getId() + 
-						" mal initialisée.\n");
-				e.printStackTrace();
-			}
-		}
 		
-		/* 
-		 * Pour insérer il faut tout décaler.
-		 * on recopie listeBits à partir de indiceInsertion jusqu'à la fin
-		 * puis on insère les nouveaux bits à indiceInsertion
-		 * puis on remet au bout les bits recopiés
-		 */
-		List<Bit> finListeBits = listeBits.subList(indiceInsertion, listeBits.size()-1);
-		listeBits.addAll(indiceInsertion, aInserer);
-		listeBits.addAll(indiceInsertion + aInserer.size(), finListeBits);
+		if(listeBits.size()>0)
+		{
+			//on cherche à quel indice insérer dans la liste de bits
+			int indiceInsertion = 0;
+			Bit bitCourant = listeBits.get(indiceInsertion);
+			while(comp.compare(premier, bitCourant) < 0)
+			{
+				indiceInsertion++;
+				try
+				{
+					bitCourant = listeBits.get(indiceInsertion);
+				}
+				catch(IndexOutOfBoundsException e)
+				{
+					System.err.println("liste de bits du registre " + registre.getId() + 
+							" mal initialisée.\n");
+					e.printStackTrace();
+				}
+			}
+			
+			/* 
+			 * Pour insérer il faut tout décaler.
+			 * on recopie listeBits à partir de indiceInsertion jusqu'à la fin
+			 * puis on insère les nouveaux bits à indiceInsertion
+			 * puis on remet au bout les bits recopiés
+			 */
+			List<Bit> finListeBits = listeBits.subList(indiceInsertion, listeBits.size()-1);
+			listeBits.addAll(indiceInsertion, aInserer);
+			listeBits.addAll(indiceInsertion + aInserer.size(), finListeBits);
+		}
+		else
+		{
+			listeBits.addAll(aInserer);
+		}
 	}
 	
 	public String toString()
