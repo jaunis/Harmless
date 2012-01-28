@@ -10,22 +10,21 @@ import java.util.List;
  * @author Jean AUNIS
  *
  */
-public class Register {
+public class Register extends BitManager{
 	
 	private String id;
 	private String description;
 	private List<Slice> listeSlices;
-	private List<Bit> listeBits;
 	private Peripheral peripherique;
-	private int size;
+	private String adresse;
 	
-	
-	public Register(Peripheral peripherique, String id, String description, int size)
+	public Register(Peripheral peripherique, String id, String description, String adresse, int size)
 	{
+		super(size);
 		this.peripherique = peripherique;
 		this.id = id;
 		this.description = description;
-		listeBits = new ArrayList<Bit>(size);
+		this.adresse = adresse;
 		listeSlices = new ArrayList<Slice>();
 	}
 	/**
@@ -76,18 +75,6 @@ public class Register {
 	public void setListeSlices(List<Slice> listeSlices) {
 		this.listeSlices = listeSlices;
 	}
-	/**
-	 * @return the listeBits
-	 */
-	public List<Bit> getListeBits() {
-		return listeBits;
-	}
-	/**
-	 * @param listeBits the listeBits to set
-	 */
-	public void setListeBits(List<Bit> listeBits) {
-		this.listeBits = listeBits;
-	}
 	
 	public int size()
 	{
@@ -100,22 +87,6 @@ public class Register {
 				+ "\t" + Integer.toHexString(getValeur());
 	}
 	
-	public int getValeur()
-	{
-		int res = 0;
-		int puissance = 1;
-		for(int i=0; i<listeBits.size(); i++)
-		{
-			res += listeBits.get(i).getValeur() * puissance;
-			puissance *= 2;
-		}
-		return res;
-	}
-	
-	public void addBit(Bit b)
-	{
-		listeBits.add(b);
-	}
 	public void addBit(int position, Bit b)
 	{
 		listeBits.add(position, b);
@@ -124,5 +95,17 @@ public class Register {
 	public void addSlice(Slice s)
 	{
 		listeSlices.add(s);
+	}
+	/**
+	 * @return the adresse
+	 */
+	public String getAdresse() {
+		return adresse;
+	}
+	/**
+	 * @param adresse the adresse to set
+	 */
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
 	}
 }
