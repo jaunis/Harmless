@@ -81,6 +81,7 @@ public class Activator extends AbstractUIPlugin {
 						int local = listeCles.nextElement();
 						System.out.println("   " + local + ": " + listeItems.get(local));
 					}
+					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
 				}
 			}
 		}

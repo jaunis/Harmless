@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <peripherals>
 	<peripheral name="PORTA">
-		<register id="DDRA"  size="8" address="0x1" description="Data direction register A"/>
-		<register id="PINA"  size="8" address="0x0" description="Port Input A"/>
-		<register id="PORTA" size="8" address="0x2" description="Port Output A"/>
+		<register id="DDRA"  size="8" address="0x1" value="0" description="Data direction register A"></register>
+		<register id="PINA"  size="8" address="0x0" value="0" description="Port Input A"></register>
+		<register id="PORTA" size="8" address="0x2" value="0" description="Port Output A"></register>
 	</peripheral>
 	<peripheral name="USART">
 		<register id="UCSR0A" size="8" description="USART0 Control and Status register A">
@@ -32,3 +32,4 @@
 		</register>
 	</peripheral>
 </peripherals>
+

@@ -164,7 +164,7 @@ public class Slice {
 			//on cherche à quel indice insérer dans la liste de bits
 			int indiceInsertion = 0;
 			Bit bitCourant = listeBits.get(indiceInsertion);
-			while(comp.compare(premier, bitCourant) < 0)
+			while(comp.compare(premier, bitCourant) > 0)
 			{
 				indiceInsertion++;
 				try
@@ -193,6 +193,7 @@ public class Slice {
 		{
 			listeBits.addAll(aInserer);
 		}
+		listeRanges.add(r);
 	}
 	
 	public String toString()
