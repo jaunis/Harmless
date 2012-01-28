@@ -1,13 +1,14 @@
 package harmless.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BitManager {
 
 	protected List<Bit> listeBits;
 
-	public BitManager() {
-		super();
+	public BitManager(int size) {
+		listeBits = new ArrayList<Bit>(size);
 	}
 
 	/**
@@ -39,6 +40,11 @@ public class BitManager {
 		}
 		return res;
 	}
+	
+	public String getValeurHexa()
+	{
+		return Integer.toHexString(getValeur());
+	}
 
 	public void setValeur(int valeur) {
 		int puissance = 1;
@@ -51,7 +57,7 @@ public class BitManager {
 		}
 	}
 
-	public void setValeur(String valeurHexa) {
+	public void setValeurHexa(String valeurHexa) {
 		int valeur = Integer.parseInt(valeurHexa, 16);
 		setValeur(valeur);
 	}

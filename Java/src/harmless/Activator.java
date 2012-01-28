@@ -59,13 +59,14 @@ public class Activator extends AbstractUIPlugin {
 	
 	public void afficherEtat()
 	{
+		listePeripheriques.get(1).getListeRegistres().get(1).setValeur(33);
 		for(Peripheral p: listePeripheriques)
 		{
 			System.out.println(p.getName() + ":");
 			for(Register r: p.getListeRegistres())
 			{
-				System.out.println(" " + r.getId() + " : " + r.getDescription());
-				System.out.println(" valeur: " + r.getValeur());
+				System.out.println(" " + r.getId() + " : " + r.getDescription() + ", " + r.getAdresse());
+				System.out.println(" valeur: " + r.getValeurHexa());
 				for(Slice s: r.getListeSlices())
 				{
 					System.out.println("  " + s.getId() + " : " + s.getDescription());

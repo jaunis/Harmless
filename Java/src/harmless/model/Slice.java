@@ -12,12 +12,11 @@ import java.util.List;
  * @author Jean AUNIS
  *
  */
-public class Slice {
+public class Slice extends BitManager{
 	
 	private String id;
 	private String description;
 	private boolean readOnly;
-	private List<Bit> listeBits;
 	//utile?
 	private List<Range> listeRanges;
 	private Register registre;
@@ -25,13 +24,12 @@ public class Slice {
 	
 	public Slice(String id, String description,	Register registre) 
 	{
-		super();
+		super(1);
 		this.id = id;
 		this.description = description;
 		this.registre = registre;
 		readOnly = false;
 		items = new Hashtable<Integer, String>();
-		listeBits = new ArrayList<Bit>();
 		listeRanges = new ArrayList<Range>();
 	}
 	/**
@@ -70,18 +68,7 @@ public class Slice {
 	public void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}
-	/**
-	 * @return the listeBits
-	 */
-	public List<Bit> getListeBits() {
-		return listeBits;
-	}
-	/**
-	 * @param listeBits the listeBits to set
-	 */
-	public void setListeBits(List<Bit> listeBits) {
-		this.listeBits = listeBits;
-	}
+
 	/**
 	 * @return the listeRanges
 	 */
@@ -122,12 +109,6 @@ public class Slice {
 	public void addItem(Integer valeur, String sens)
 	{
 		items.put(valeur, sens);
-	}
-
-	public void addBit(Bit b)
-	{
-		if(!listeBits.contains(b))
-			listeBits.add(b);
 	}
 	
 	public void addRange(Range r)
@@ -202,17 +183,4 @@ public class Slice {
 				+ "\t" + Integer.toHexString(getValeur());
 	}
 	
-	public int getValeur()
-	{
-		int res = 0;
-		int puissance = 1;
-		for(int i=0; i<listeBits.size(); i++)
-		{
-			res += listeBits.get(i).getValeur() * puissance;
-			puissance *= 2;
-		}
-		return res;
-	}
-	
-	//public void setValeur(int i)
 }
