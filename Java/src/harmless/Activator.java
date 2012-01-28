@@ -2,7 +2,12 @@ package harmless;
 
 import harmless.controller.Chargeur;
 import harmless.model.Peripheral;
+import harmless.model.Range;
+import harmless.model.Register;
+import harmless.model.Slice;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -49,8 +54,37 @@ public class Activator extends AbstractUIPlugin {
 		int port = Integer.parseInt(sc.nextLine());
 		chargeur = new Chargeur("localhost", port);
 		listePeripheriques = chargeur.initialiserPeripheriques();
+		afficherEtat();
 	}
-
+	
+	public void afficherEtat()
+	{
+		for(Peripheral p: listePeripheriques)
+		{
+			System.out.println(p.getName() + ":");
+			for(Register r: p.getListeRegistres())
+			{
+				System.out.println(" " + r.getId() + " : " + r.getDescription());
+				System.out.println(" valeur: " + r.getValeur());
+				for(Slice s: r.getListeSlices())
+				{
+					System.out.println("  " + s.getId() + " : " + s.getDescription());
+					System.out.println("  valeur : " + s.getValeur());
+					for(Range range: s.getListeRanges())
+					{
+						System.out.println("   from " + range.getFrom() + " to " + range.getTo());
+					}
+					Hashtable<Integer, String> listeItems = s.getItems();
+					Enumeration<Integer> listeCles = listeItems.keys();
+					while(listeCles.hasMoreElements())
+					{
+						int local = listeCles.nextElement();
+						System.out.println("   " + local + ": " + listeItems.get(local));
+					}
+				}
+			}
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
