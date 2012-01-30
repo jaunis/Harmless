@@ -134,7 +134,7 @@ public class SlicesStateView extends ViewPart {
 			return false;
 		}
 /*
- * We will set up a dummy model to initialize tree heararchy.
+ * We will set up a dummy model to initialize tree hierarchy.
  * In a real code, you will connect to a real model and
  * expose its hierarchy.
  */

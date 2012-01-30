@@ -5,6 +5,11 @@ import harmless.Activator;
 import java.util.ArrayList;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
@@ -46,6 +51,9 @@ public class GlobalView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	//final Display display = new Display();
+	//final Shell shell = new Shell(display);
+	//shell.setText("SWT and Swing/AWT Example");
 
 	/*
 	 * The content provider class is responsible for
@@ -136,21 +144,21 @@ public class GlobalView extends ViewPart {
 			return false;
 		}
 /*
- * We will set up a dummy model to initialize tree heararchy.
+ * We will set up a dummy model to initialize tree hierarchy.
  * In a real code, you will connect to a real model and
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject to1 = new TreeObject("Leaf 1");
-			TreeObject to2 = new TreeObject("Leaf 2");
-			TreeObject to3 = new TreeObject("Leaf 3");
-			TreeParent p1 = new TreeParent("Parent 1");
+			TreeObject to1 = new TreeObject("Slice 1");
+			TreeObject to2 = new TreeObject("Slice 2");
+			TreeObject to3 = new TreeObject("Slice 3");
+			TreeParent p1 = new TreeParent("Register 1");
 			p1.addChild(to1);
 			p1.addChild(to2);
 			p1.addChild(to3);
 			
-			TreeObject to4 = new TreeObject("Leaf 4");
-			TreeParent p2 = new TreeParent("Parent 2");
+			TreeObject to4 = new TreeObject("Slice 4");
+			TreeParent p2 = new TreeParent("Register 2");
 			p2.addChild(to4);
 			
 			TreeParent root = new TreeParent("Root");
@@ -286,6 +294,18 @@ public class GlobalView extends ViewPart {
 			"Vue globale",
 			message);
 	}
+	
+	
+	/*Listener exitListener = new Listener() {
+		public void handleEvent(Event e) {
+			MessageBox dialog = new MessageBox(shell, SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
+			dialog.setText("Question");
+			dialog.setMessage("Exit?");
+			if (e.type == SWT.Close) e.doit = false;
+			if (dialog.open() != SWT.OK) return;
+			shell.dispose();
+		}
+	};*/
 
 	/**
 	 * Passing the focus request to the viewer's control.

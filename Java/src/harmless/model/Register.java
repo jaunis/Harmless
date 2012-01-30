@@ -17,6 +17,7 @@ public class Register {
 	private List<Slice> listeSlices;
 	private List<Bit> listeBits;
 	private Peripheral peripherique;
+	private String address;
 	
 	
 	public Register(Peripheral peripherique, String id, String description, int size)
@@ -26,6 +27,7 @@ public class Register {
 		this.description = description;
 		listeBits = new ArrayList<Bit>(size);
 		listeSlices = new ArrayList<Slice>();
+		this.address = "unspecified";
 	}
 	/**
 	 * @return the peripherique
@@ -91,6 +93,16 @@ public class Register {
 	public int size()
 	{
 		return listeBits.size();
+	}
+	
+	public String getAddress()
+	{
+		return address;
+	}
+	
+	public void setAddress(String bla)
+	{
+	     this.address = bla;	
 	}
 	
 	public String toString()
