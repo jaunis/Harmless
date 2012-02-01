@@ -1,11 +1,13 @@
 package harmless;
 
 import harmless.controller.Chargeur;
+import harmless.controller.Updater;
 import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
 
+import java.net.Socket;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -25,6 +27,7 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	private Chargeur chargeur;
+	private Updater updater;
 	private List<Peripheral> listePeripheriques;
 	
 	public Chargeur getChargeur() {
@@ -52,11 +55,32 @@ public class Activator extends AbstractUIPlugin {
 		System.out.println("Veuillez entrer le port d'écoute:");
 		Scanner sc = new Scanner(System.in);
 		int port = Integer.parseInt(sc.nextLine());
-		chargeur = new Chargeur("localhost", port);
+		Socket socket = new Socket("localhost", port);
+		chargeur = new Chargeur(socket);
+		
 		listePeripheriques = chargeur.initialiserPeripheriques();
 		afficherEtat();
+		
+		updater = new Updater(socket);
+		updater.start();
 	}
 	
+	public Updater getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Updater updater) {
+		this.updater = updater;
+	}
+
+	public void setChargeur(Chargeur chargeur) {
+		this.chargeur = chargeur;
+	}
+
+	public void setListePeripheriques(List<Peripheral> listePeripheriques) {
+		this.listePeripheriques = listePeripheriques;
+	}
+
 	public void afficherEtat()
 	{
 		listePeripheriques.get(1).getListeRegistres().get(1).setValeur(33);
