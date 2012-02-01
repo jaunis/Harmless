@@ -61,6 +61,7 @@ public class Activator extends AbstractUIPlugin {
 		listePeripheriques = chargeur.initialiserPeripheriques();
 		afficherEtat();
 		
+		socket = new Socket("localhost", port);
 		updater = new Updater(socket);
 		updater.start();
 	}

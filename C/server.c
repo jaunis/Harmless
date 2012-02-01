@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 	n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
 	if (n < 0) error("ERROR reading from socket");
 	printf("Here is the message: %s\n",buffer);
-	if(!comp(buffer, "send")) cont = 0;
+	if(!comp(buffer, "send\n")) cont = 0;
 
 
       //fichier à changer, ce sera le .xml à placer dans le même fichier
