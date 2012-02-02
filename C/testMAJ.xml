@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<peripherals>
+	<update>
+		<register id="DDRA"  value = "0x55"></register>
+		<register id="PORTA" value = "0xA5"></register>
+		<register id="PINA"  value = "0x5A"></register>
+	</update>
+</peripherals>
+

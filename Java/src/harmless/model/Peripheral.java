@@ -45,9 +45,9 @@ public class Peripheral {
 		this.listeRegistres = listeRegistres;
 	}
 	
-	public void addRegister(int position, Register r)
+	public void addRegister(Register r)
 	{
-		listeRegistres.add(position, r);
+		listeRegistres.add(r);
 	}
 	
 	public String toString()

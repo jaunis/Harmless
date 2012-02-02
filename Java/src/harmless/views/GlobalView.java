@@ -1,5 +1,6 @@
 package harmless.views;
 
+<<<<<<< HEAD
 import harmless.Activator;
 
 import java.util.ArrayList;
@@ -14,11 +15,33 @@ import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.action.*;
+=======
+import harmless.views.communs.NameSorter;
+import harmless.views.communs.ViewContentProvider;
+import harmless.views.communs.ViewLabelProvider;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+>>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.DrillDownAdapter;
+import org.eclipse.ui.part.ViewPart;
 
 
 /**
@@ -65,6 +88,7 @@ public class GlobalView extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	 
+<<<<<<< HEAD
 	class TreeObject implements IAdaptable {
 		private String name;
 		private TreeParent parent;
@@ -184,6 +208,8 @@ public class GlobalView extends ViewPart {
 	class NameSorter extends ViewerSorter {
 	}
 
+=======
+>>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
 	/**
 	 * The constructor.
 	 */
@@ -198,7 +224,7 @@ public class GlobalView extends ViewPart {
 		//TODO récupérer l'activateur avec Activator.getDefault();
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider());
+		viewer.setContentProvider(new ViewContentProvider(this));
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());

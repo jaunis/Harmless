@@ -11,6 +11,8 @@
 
 #define TAILLE_MAXI 256
 
+int comp(char*, char*);
+
 //envoie de message en cas d'erreur
 void error(const char *msg)
 {
@@ -22,9 +24,6 @@ int main(int argc, char *argv[])
 {
 //sockfd and newsockfd are file descriptor, store the value of the socket system call and the accept system call
 //portno registers the port number accepted by the server
-
-printf("c'est bon on a les droits!!\n");
-
 
      int sockfd, newsockfd, portno;
      socklen_t clilen;
@@ -69,51 +68,74 @@ printf("c'est bon on a les droits!!\n");
 
 //accepting procedure 
      clilen = sizeof(cli_addr);
-     newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-     if (newsockfd < 0) 
-          error("ERROR on accept");
+     int cont = 1;
+     while(cont)
+     {
+      newsockfd = accept(sockfd, 
+		  (struct sockaddr *) &cli_addr, 
+		  &clilen);
+      if (newsockfd < 0) 
+	    error("ERROR on accept");
+
+      
+      bzero(buffer,TAILLE_MAXI);
+      //reading from the socket
+	n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
+	if (n < 0) error("ERROR reading from socket");
+	printf("Here is the message: %s\n",buffer);
+	if(!comp(buffer, "send\n")) cont = 0;
 
 
-     bzero(buffer,TAILLE_MAXI);
-//reading from the socket
-     n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
-     if (n < 0) error("ERROR reading from socket");
-     printf("Here is the message: %s\n",buffer);
-
-
-//fichier à changer, ce sera le .xml à placer dans le même fichier
-//------------------------------------------------------------------
-	FILE *fichier = fopen ("example.xml", "r");
-//------------------------------------------------------------------
+      //fichier à changer, ce sera le .xml à placer dans le même fichier
+      //------------------------------------------------------------------
+	      FILE *fichier = fopen ("example.xml", "r");
+      //------------------------------------------------------------------
 
 
 
-   if (fichier != NULL)
-   {
-        bzero(buffer,TAILLE_MAXI);
-	
-        while(fgets(buffer, TAILLE_MAXI, fichier)!=NULL){
-        //fgets(chaine, TAILLE_MAXI, fichier); // On lit maximum TAILLE_MAX caractères du fichier, on stocke le tout dans "chaine"
-		n = write(newsockfd, buffer, strlen(buffer));
-		if (n<0) error("ERROR writing to socket");
-		printf("%s", buffer);
-                bzero(buffer,TAILLE_MAXI);
+	if (fichier != NULL)
+	{
+	      bzero(buffer,TAILLE_MAXI);
+	      
+	      while(fgets(buffer, TAILLE_MAXI, fichier)!=NULL){
+	      //fgets(chaine, TAILLE_MAXI, fichier); // On lit maximum TAILLE_MAX caractères du fichier, on stocke le tout dans "chaine"
+		      n = write(newsockfd, buffer, strlen(buffer));
+		      if (n<0) error("ERROR writing to socket");
+		      printf("%s", buffer);
+		      bzero(buffer,TAILLE_MAXI);
+	      }
+	  
+	    fclose (fichier);
+	}
+	else
+	{
+	    printf ("Erreur d'ouverture du fichier\n");
 	}
 
-    
-      fclose (fichier);
-   }
-   else
-   {
-      printf ("Erreur d'ouverture du fichier\n");
-   }
 
+	  //n = write(newsockfd,"I got your message",18);
+	  if (n < 0) error("ERROR writing to socket");
+	  close(newsockfd);
 
-     //n = write(newsockfd,"I got your message",18);
-     if (n < 0) error("ERROR writing to socket");
-     close(newsockfd);
+     }
+     
+     
      close(sockfd);
      return 0; 
+}
+
+int comp(char* s1, char* s2)
+{
+  printf("s1: %d\n", (int) strlen(s1));
+  printf("s2: %d\n", (int) strlen(s2));
+  if(strlen(s1) != strlen(s2)) return 0;
+  else
+  {
+    int i;
+    for(i=0; i < strlen(s1); i++)
+    {
+      if(s1[i] != s2[i]) return 0;
+    }
+    return 1;
+  }
 }
