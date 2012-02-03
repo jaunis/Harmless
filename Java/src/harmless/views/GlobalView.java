@@ -1,21 +1,6 @@
 package harmless.views;
 
-<<<<<<< HEAD
-import harmless.Activator;
 
-import java.util.ArrayList;
-
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.part.*;
-import org.eclipse.jface.viewers.*;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.action.*;
-=======
 import harmless.views.communs.NameSorter;
 import harmless.views.communs.ViewContentProvider;
 import harmless.views.communs.ViewLabelProvider;
@@ -26,7 +11,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
->>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -88,128 +72,8 @@ public class GlobalView extends ViewPart {
 	 * (like Task List, for example).
 	 */
 	 
-<<<<<<< HEAD
-	class TreeObject implements IAdaptable {
-		private String name;
-		private TreeParent parent;
-		
-		public TreeObject(String name) {
-			this.name = name;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setParent(TreeParent parent) {
-			this.parent = parent;
-		}
-		public TreeParent getParent() {
-			return parent;
-		}
-		public String toString() {
-			return getName();
-		}
-		public Object getAdapter(Class key) {
-			return null;
-		}
-	}
-	
-	class TreeParent extends TreeObject {
-		private ArrayList children;
-		public TreeParent(String name) {
-			super(name);
-			children = new ArrayList();
-		}
-		public void addChild(TreeObject child) {
-			children.add(child);
-			child.setParent(this);
-		}
-		public void removeChild(TreeObject child) {
-			children.remove(child);
-			child.setParent(null);
-		}
-		public TreeObject [] getChildren() {
-			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
-		}
-		public boolean hasChildren() {
-			return children.size()>0;
-		}
-	}
 
-	class ViewContentProvider implements IStructuredContentProvider, 
-										   ITreeContentProvider {
-		private TreeParent invisibleRoot;
 
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		public Object[] getElements(Object parent) {
-			if (parent.equals(getViewSite())) {
-				if (invisibleRoot==null) initialize();
-				return getChildren(invisibleRoot);
-			}
-			return getChildren(parent);
-		}
-		public Object getParent(Object child) {
-			if (child instanceof TreeObject) {
-				return ((TreeObject)child).getParent();
-			}
-			return null;
-		}
-		public Object [] getChildren(Object parent) {
-			if (parent instanceof TreeParent) {
-				return ((TreeParent)parent).getChildren();
-			}
-			return new Object[0];
-		}
-		public boolean hasChildren(Object parent) {
-			if (parent instanceof TreeParent)
-				return ((TreeParent)parent).hasChildren();
-			return false;
-		}
-/*
- * We will set up a dummy model to initialize tree hierarchy.
- * In a real code, you will connect to a real model and
- * expose its hierarchy.
- */
-		private void initialize() {
-			TreeObject to1 = new TreeObject("Slice 1");
-			TreeObject to2 = new TreeObject("Slice 2");
-			TreeObject to3 = new TreeObject("Slice 3");
-			TreeParent p1 = new TreeParent("Register 1");
-			p1.addChild(to1);
-			p1.addChild(to2);
-			p1.addChild(to3);
-			
-			TreeObject to4 = new TreeObject("Slice 4");
-			TreeParent p2 = new TreeParent("Register 2");
-			p2.addChild(to4);
-			
-			TreeParent root = new TreeParent("Root");
-			root.addChild(p1);
-			root.addChild(p2);
-			
-			invisibleRoot = new TreeParent("");
-			invisibleRoot.addChild(root);
-		}
-	}
-	class ViewLabelProvider extends LabelProvider {
-
-		public String getText(Object obj) {
-			return obj.toString();
-		}
-		public Image getImage(Object obj) {
-			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
-			if (obj instanceof TreeParent)
-			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		}
-	}
-	class NameSorter extends ViewerSorter {
-	}
-
-=======
->>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
 	/**
 	 * The constructor.
 	 */

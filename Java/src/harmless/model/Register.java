@@ -16,11 +16,11 @@ public class Register extends BitManager{
 	private String description;
 	private List<Slice> listeSlices;
 	private Peripheral peripherique;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 	private String address;
-=======
+//=======
 	private String adresse;
->>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
+//>>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
 	
 	public Register(Peripheral peripherique, String id, String description, String adresse, int size)
 	{
