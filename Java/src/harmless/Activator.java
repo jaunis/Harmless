@@ -59,6 +59,7 @@ public class Activator extends AbstractUIPlugin {
 		chargeur = new Chargeur(socket);
 		
 		listePeripheriques = chargeur.initialiserPeripheriques();
+		//listePeripheriques.get(1).getListeRegistres().get(index)
 		afficherEtat();
 		
 		socket = new Socket("localhost", port);
@@ -84,7 +85,7 @@ public class Activator extends AbstractUIPlugin {
 
 	public void afficherEtat()
 	{
-		listePeripheriques.get(1).getListeRegistres().get(1).setValeur(33);
+		listePeripheriques.get(1).getListeRegistres().get(1).setValeurHexa("21");
 		for(Peripheral p: listePeripheriques)
 		{
 			System.out.println(p.getName() + ":");
@@ -100,13 +101,14 @@ public class Activator extends AbstractUIPlugin {
 					{
 						System.out.println("   from " + range.getFrom() + " to " + range.getTo());
 					}
-					Hashtable<Integer, String> listeItems = s.getItems();
-					Enumeration<Integer> listeCles = listeItems.keys();
-					while(listeCles.hasMoreElements())
-					{
-						int local = listeCles.nextElement();
-						System.out.println("   " + local + ": " + listeItems.get(local));
-					}
+					System.out.println("   nom de l'item: " + s.getItems().get(s.getValeur()));
+//					Hashtable<Integer, String> listeItems = s.getItems();
+//					Enumeration<Integer> listeCles = listeItems.keys();
+//					while(listeCles.hasMoreElements())
+//					{
+//						int local = listeCles.nextElement();
+//						System.out.println("   " + local + ": " + listeItems.get(local));
+//					}
 					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
 				}
 			}
