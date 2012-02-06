@@ -12,6 +12,8 @@
 #define TAILLE_MAXI 256
 
 int comp(char*, char*);
+int init_socket_server(int);
+void envoi_fichier_par_socket(char*, int);
 
 //envoie de message en cas d'erreur
 void error(const char *msg)
@@ -44,54 +46,48 @@ int main(int argc, char *argv[])
   int cont = 1;
   while(cont)
   {
-   newsockfd = accept(sockfd, 
-		      (struct sockaddr *) &cli_addr, 
-		      &clilen);
-   if (newsockfd < 0) 
-    error("ERROR on accept");
+    newsockfd = accept(sockfd, 
+			(struct sockaddr *) &cli_addr, 
+			&clilen);
+    if (newsockfd < 0) 
+      error("ERROR on accept");
 
-      
-  bzero(buffer,TAILLE_MAXI);
-  //reading from the socket
-  n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
-  if (n < 0) error("ERROR reading from socket");
-  printf("Here is the message: %s\n",buffer);
-  if(!comp(buffer, "send\n")) cont = 0;
+	
+    bzero(buffer,TAILLE_MAXI);
+    //reading from the socket
+    n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
+    if (n < 0) error("ERROR reading from socket");
+    printf("Here is the message: %s\n",buffer);
+    if(!comp(buffer, "send\n")) cont = 0;
 
-   //fichier à changer, ce sera le .xml à placer dans le même fichier
-   //------------------------------------------------------------------
-   FILE *fichier = fopen ("example.xml", "r");
-   //------------------------------------------------------------------
+    envoi_fichier_par_socket("example.xml", newsockfd);
+    //fichier à changer, ce sera le .xml à placer dans le même fichier
+    //------------------------------------------------------------------
+    //FILE *fichier = fopen ("example.xml", "r");
+    //------------------------------------------------------------------
 
 
 
-  if (fichier != NULL)
-  {
-	bzero(buffer,TAILLE_MAXI);
-	      
-	while(fgets(buffer, TAILLE_MAXI, fichier)!=NULL){
-	//fgets(chaine, TAILLE_MAXI, fichier); // On lit maximum TAILLE_MAX caractères du fichier, on stocke le tout dans "chaine"
-	      n = write(newsockfd, buffer, strlen(buffer));
-	      if (n<0) error("ERROR writing to socket");
-	      printf("%s", buffer);
-	      bzero(buffer,TAILLE_MAXI);
-	}
-	  
-	fclose (fichier);
+//     if (fichier != NULL)
+//     {
+// 	  bzero(buffer,TAILLE_MAXI);
+// 		
+// 	  while(fgets(buffer, TAILLE_MAXI, fichier)!=NULL){
+// 	  //fgets(chaine, TAILLE_MAXI, fichier); // On lit maximum TAILLE_MAX caractères du fichier, on stocke le tout dans "chaine"
+// 		n = write(newsockfd, buffer, strlen(buffer));
+// 		if (n<0) error("ERROR writing to socket");
+// 		printf("%s", buffer);
+// 		bzero(buffer,TAILLE_MAXI);
+// 	  }
+// 	    
+// 	  fclose (fichier);
+//     }
+//     else
+//     {
+//       printf ("Erreur d'ouverture du fichier\n");
+//     }
+    close(newsockfd);
   }
-  else
-  {
-    printf ("Erreur d'ouverture du fichier\n");
-  }
-
-
-  //n = write(newsockfd,"I got your message",18);
-  if (n < 0) error("ERROR writing to socket");
-  close(newsockfd);
-
-  }
-     
-     
   close(sockfd);
   return 0; 
 }
@@ -148,4 +144,30 @@ int init_socket_server(int port)
   //first argument is the socket file descriptor
   listen(sockfd,5);
   return sockfd;
+}
+
+void envoi_fichier_par_socket(char* nomFichier, int socket_client)
+{
+  char buffer[TAILLE_MAXI];
+  int n;
+  FILE *fichier = fopen (nomFichier, "r");
+    //------------------------------------------------------------------
+    if (fichier != NULL)
+    {
+	  bzero(buffer,TAILLE_MAXI);
+		
+	  while(fgets(buffer, TAILLE_MAXI, fichier)!=NULL){
+	  //fgets(chaine, TAILLE_MAXI, fichier); // On lit maximum TAILLE_MAX caractères du fichier, on stocke le tout dans "chaine"
+		n = write(socket_client, buffer, strlen(buffer));
+		if (n<0) error("ERROR writing to socket");
+		printf("%s", buffer);
+		bzero(buffer,TAILLE_MAXI);
+	  }
+	    
+	  fclose (fichier);
+    }
+    else
+    {
+      printf ("Erreur d'ouverture du fichier\n");
+    }
 }
