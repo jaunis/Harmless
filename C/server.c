@@ -43,50 +43,45 @@ int main(int argc, char *argv[])
 
   //accepting procedure 
   clilen = sizeof(cli_addr);
-  int cont = 1;
-  while(cont)
-  {
-    newsockfd = accept(sockfd, 
-			(struct sockaddr *) &cli_addr, 
-			&clilen);
-    if (newsockfd < 0) 
+  newsockfd = accept(sockfd, 
+		    (struct sockaddr *) &cli_addr, 
+		    &clilen);
+  if (newsockfd < 0) 
       error("ERROR on accept");
 
 	
+  bzero(buffer,TAILLE_MAXI);
+  //reading from the socket
+  n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
+  if (n < 0) error("ERROR reading from socket");
+  printf("Here is the message: %s\n",buffer);
+
+  envoi_fichier_par_socket("example.xml", newsockfd);
+  close(newsockfd);
+  
+  //boucle sur l'envoi de testMAJ.xml
+  int cont = 1;
+  while(cont)
+  {
+     newsockfd = accept(sockfd, 
+		    (struct sockaddr *) &cli_addr, 
+		    &clilen);
+    if (newsockfd < 0) 
+	error("ERROR on accept");
+
+	  
     bzero(buffer,TAILLE_MAXI);
     //reading from the socket
     n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
     if (n < 0) error("ERROR reading from socket");
     printf("Here is the message: %s\n",buffer);
-    if(!comp(buffer, "send\n")) cont = 0;
-
-    envoi_fichier_par_socket("example.xml", newsockfd);
-    //fichier à changer, ce sera le .xml à placer dans le même fichier
-    //------------------------------------------------------------------
-    //FILE *fichier = fopen ("example.xml", "r");
-    //------------------------------------------------------------------
-
-
-
-//     if (fichier != NULL)
-//     {
-// 	  bzero(buffer,TAILLE_MAXI);
-// 		
-// 	  while(fgets(buffer, TAILLE_MAXI, fichier)!=NULL){
-// 	  //fgets(chaine, TAILLE_MAXI, fichier); // On lit maximum TAILLE_MAX caractères du fichier, on stocke le tout dans "chaine"
-// 		n = write(newsockfd, buffer, strlen(buffer));
-// 		if (n<0) error("ERROR writing to socket");
-// 		printf("%s", buffer);
-// 		bzero(buffer,TAILLE_MAXI);
-// 	  }
-// 	    
-// 	  fclose (fichier);
-//     }
-//     else
-//     {
-//       printf ("Erreur d'ouverture du fichier\n");
-//     }
-    close(newsockfd);
+    if(!comp(buffer, "send\n"))
+          cont = 0;
+    else
+    {
+      envoi_fichier_par_socket("testMAJ.xml", newsockfd);
+      close(newsockfd);
+    }
   }
   close(sockfd);
   return 0; 

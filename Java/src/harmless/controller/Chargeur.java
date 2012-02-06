@@ -21,9 +21,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-/**
- * 
- */
 
 /**
  * @author Jean AUNIS
