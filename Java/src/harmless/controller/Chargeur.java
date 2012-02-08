@@ -50,7 +50,7 @@ public class Chargeur {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			//System.exit(1);
 		}
 		
 		out.println("send");

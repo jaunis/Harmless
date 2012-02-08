@@ -78,10 +78,9 @@ int main(int argc, char *argv[])
     if(!comp(buffer, "send\n"))
           cont = 0;
     else
-    {
       envoi_fichier_par_socket("testMAJ.xml", newsockfd);
-      close(newsockfd);
-    }
+    //c'est assez moche de fermer et ouvrir à chaque fois, voir si on peut faire autrement
+    close(newsockfd);
   }
   close(sockfd);
   return 0; 

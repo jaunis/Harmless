@@ -2,14 +2,13 @@ package harmless;
 
 import harmless.controller.Chargeur;
 import harmless.controller.Updater;
+import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
 
 import java.net.Socket;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -59,11 +58,9 @@ public class Activator extends AbstractUIPlugin {
 		chargeur = new Chargeur(socket);
 		
 		listePeripheriques = chargeur.initialiserPeripheriques();
-		//listePeripheriques.get(1).getListeRegistres().get(index)
 		afficherEtat();
-		
-		socket = new Socket("localhost", port);
-		updater = new Updater(socket);
+		Thread.sleep(10);
+		updater = new Updater("localhost", port);
 		updater.start();
 	}
 	
@@ -91,7 +88,7 @@ public class Activator extends AbstractUIPlugin {
 			System.out.println(p.getName() + ":");
 			for(Register r: p.getListeRegistres())
 			{
-				System.out.println(" " + r.getId() + " : " + r.getDescription() + ", " + r.getAdresse());
+				System.out.println(" " + r.getId() + " : " + r.getDescription() + ", " + r.getAddress());
 				System.out.println(" valeur: " + r.getValeurHexa());
 				for(Slice s: r.getListeSlices())
 				{
@@ -102,13 +99,6 @@ public class Activator extends AbstractUIPlugin {
 						System.out.println("   from " + range.getFrom() + " to " + range.getTo());
 					}
 					System.out.println("   nom de l'item: " + s.getItems().get(s.getValeur()));
-//					Hashtable<Integer, String> listeItems = s.getItems();
-//					Enumeration<Integer> listeCles = listeItems.keys();
-//					while(listeCles.hasMoreElements())
-//					{
-//						int local = listeCles.nextElement();
-//						System.out.println("   " + local + ": " + listeItems.get(local));
-//					}
 					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
 				}
 			}
@@ -131,5 +121,17 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
-
+	
+	public Register getRegistre(String id) throws RegistreNonTrouveException
+	{
+		for(Peripheral p: listePeripheriques)
+		{
+			for(Register r: p.getListeRegistres())
+			{
+				if(r.getId().equals(id))
+					return r;
+			}
+		}
+		throw new RegistreNonTrouveException(id);
+	}
 }
