@@ -40,7 +40,7 @@ public class Updater extends Thread {
 	}
 
 	
-	public void run()
+	public synchronized void run()
 	{
 		while(!stop)
 		{
@@ -48,6 +48,9 @@ public class Updater extends Thread {
 				recevoirUpdate();
 			else if(envoyer)
 				envoyerUpdate();
+			try {
+				wait();
+			} catch (InterruptedException e) {}
 		}
 	}
 	
@@ -102,14 +105,16 @@ public class Updater extends Thread {
 		
 	}
 	
-	public void demanderReception()
+	public synchronized void demanderReception()
 	{
 		recevoir = true;
+		notifyAll();
 	}
 	
-	public void demanderEnvoi()
+	public synchronized void demanderEnvoi()
 	{
 		envoyer = true;
+		notifyAll();
 	}
 	
 	public void arret()
