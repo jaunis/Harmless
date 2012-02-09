@@ -43,7 +43,7 @@ public class BitManager {
 	
 	public String getValeurHexa()
 	{
-		return Integer.toHexString(getValeur());
+		return "0x" + Integer.toHexString(getValeur());
 	}
 
 	public void setValeur(int valeur) {
@@ -58,7 +58,10 @@ public class BitManager {
 	}
 
 	public void setValeurHexa(String valeurHexa) {
-		int valeur = Integer.parseInt(valeurHexa, 16);
+		String copie = valeurHexa;
+		if(valeurHexa.startsWith("0x"))
+			copie = valeurHexa.substring(2);
+		int valeur = Integer.parseInt(copie, 16);
 		setValeur(valeur);
 	}
 

@@ -22,7 +22,7 @@ public class Updater extends Thread {
 	private int port;
 	private String serveur;
 	private List<Register> listeMaj;
-	private boolean stop, recevoir, envoyer;
+	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
 	private PrintWriter out;
 	private InputStream ips;
 		
@@ -35,10 +35,10 @@ public class Updater extends Thread {
 		stop = false;
 		recevoir = false;
 		envoyer = false;
+		majRecue = false;
+		majEnvoyee = false;
 	}
 
-	public void start()
-	{	}
 	
 	public void run()
 	{
@@ -51,6 +51,7 @@ public class Updater extends Thread {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void recevoirUpdate() {
 		recevoir = false;
 		Document document = null;
@@ -62,13 +63,15 @@ public class Updater extends Thread {
 				
 				SAXBuilder sxb = new SAXBuilder();
 				try {
+					out.println("send");
 					document = sxb.build(ips);
 					Element racine = document.getRootElement();
-					List<Element> registresXml = racine.getChildren("register");
+					List<Element> registresXml = racine.getChild("update").getChildren("register");
 					for(Element e: registresXml)
 					{
 						Register r = Activator.getDefault().getRegistre(e.getAttributeValue("id"));
 						r.setValeurHexa(e.getAttributeValue("value"));
+						System.err.println("registre " + e.getAttributeValue("id") + " = " + e.getAttributeValue("value"));
 					}
 				} catch (JDOMException e) {
 					e.printStackTrace();
@@ -77,7 +80,7 @@ public class Updater extends Thread {
 				} catch (RegistreNonTrouveException e) {
 					e.printStackTrace();
 				}
-				
+				majRecue = true;
 				initIO();
 				
 			}
@@ -90,11 +93,12 @@ public class Updater extends Thread {
 	{
 		envoyer = false;
 		
-			synchronized(listeMaj)
-			{
-				//TODO envoyer les MAJ
-				listeMaj.removeAll(listeMaj);
-			}
+		synchronized(listeMaj)
+		{
+			//TODO envoyer les MAJ
+			listeMaj.removeAll(listeMaj);
+			majEnvoyee = true;
+		}
 		
 	}
 	
@@ -118,7 +122,7 @@ public class Updater extends Thread {
 		listeMaj.add(r);
 	}
 	
-	private void initIO()
+	private synchronized void initIO()
 	{
 		try {
 			Socket socket = new Socket(serveur, port);
@@ -129,5 +133,27 @@ public class Updater extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public boolean majRecue() 
+	{
+		if(majRecue)
+		{
+			majRecue = false;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public boolean majEnvoyee()
+	{
+		if(majEnvoyee)
+		{
+			majEnvoyee = false;
+			return true;
+		}
+		else
+			return false;
 	}
 }

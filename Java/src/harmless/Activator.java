@@ -62,6 +62,15 @@ public class Activator extends AbstractUIPlugin {
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
 		updater.start();
+		while(true)
+		{
+			String ordre = sc.nextLine();
+			if(ordre.equals("update"))
+				updater.demanderReception();
+			while(!updater.majRecue());
+			System.err.println("Une mise à jour effectuée:");
+			afficherEtat();
+		}
 	}
 	
 	public Updater getUpdater() {
