@@ -1,6 +1,7 @@
 package harmless;
 
 import harmless.controller.Chargeur;
+import harmless.controller.EntreeStandard;
 import harmless.controller.Updater;
 import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Peripheral;
@@ -28,6 +29,7 @@ public class Activator extends AbstractUIPlugin {
 	private Chargeur chargeur;
 	private Updater updater;
 	private List<Peripheral> listePeripheriques;
+	private EntreeStandard entree;
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -62,15 +64,9 @@ public class Activator extends AbstractUIPlugin {
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
 		updater.start();
-		while(true)
-		{
-			String ordre = sc.nextLine();
-			if(ordre.equals("update"))
-				updater.demanderReception();
-			while(!updater.majRecue());
-			System.err.println("Une mise à jour effectuée:");
-			afficherEtat();
-		}
+		entree = new EntreeStandard();
+		entree.start();
+		
 	}
 	
 	public Updater getUpdater() {
