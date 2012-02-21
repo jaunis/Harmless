@@ -3,10 +3,8 @@ package harmless.views.GlobalView;
 
 import harmless.views.communs.NameSorter;
 import harmless.views.communs.ViewLabelProvider;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -75,26 +73,29 @@ public class GlobalView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		//TODO récupérer l'activateur avec Activator.getDefault();
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		drillDownAdapter = new DrillDownAdapter(viewer);
 		
 		for(int i=0; i<=8; i++)
 		{
 			listeColonnes.add(new TreeViewerColumn(viewer, SWT.NONE));
 		}
 		
+		int i = 0;
 		for(TreeViewerColumn tvc: listeColonnes)
 		{
+			//tvc.setLabelProvider(viewer.getLabelProvider(i));
 			tvc.getColumn().pack();
+			tvc.getColumn().setWidth(100);
+			i++;
 		}
+		viewer.getTree().setHeaderVisible(true);
+		drillDownAdapter = new DrillDownAdapter(viewer);
 		
 		viewer.setContentProvider(new GlobalViewContentProvider(this));
-		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setLabelProvider(new GlobalViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-		viewer.getTree().setHeaderVisible(true);
-
+		
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
 		makeActions();
