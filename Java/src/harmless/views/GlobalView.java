@@ -1,10 +1,13 @@
 package harmless.views;
 
+import harmless.model.Peripheral;
+import harmless.model.Register;
+import harmless.Activator;
 
-import harmless.views.communs.NameSorter;
-import harmless.views.communs.ViewContentProvider;
-import harmless.views.communs.ViewLabelProvider;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -15,11 +18,20 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -28,51 +40,162 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 
-/**
- * This sample class demonstrates how to plug-in a new
- * workbench view. The view shows data obtained from the
- * model. The sample creates a dummy model on the fly,
- * but a real implementation would connect to the model
- * available either in this or another plug-in (e.g. the workspace).
- * The view is connected to the model using a content provider.
- * <p>
- * The view uses a label provider to define how model
- * objects should be presented in the view. Each
- * view can present the same model objects using
- * different labels and icons, if needed. Alternatively,
- * a single label provider can be shared between views
- * in order to ensure that objects of the same type are
- * presented in the same way everywhere.
- * <p>
- */
+
 
 public class GlobalView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "harmless.views.GlobalView";
+	public static final String ID = "testvue.views.SampleView";
+	
+	public List<Peripheral> listePeripheriques;
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	//final Display display = new Display();
-	//final Shell shell = new Shell(display);
-	//shell.setText("SWT and Swing/AWT Example");
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
+
 	 
+	class TreeObject implements IAdaptable {
+		private String name;
+		private String s = "hehejej";
+		private TreeParent parent;
+		
+		public TreeObject(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+		public String getS(){
+			return s;
+		}
+		public void setParent(TreeParent parent) {
+			this.parent = parent;
+		}
+		public TreeParent getParent() {
+			return parent;
+		}
+		public String toString() {
+			return getName();
+		}
+		public Object getAdapter(Class key) {
+			return null;
+		}
+	}
+	
+	class TreeParent extends TreeObject {
+		private ArrayList children;
+		public TreeParent(String name) {
+			super(name);
+			children = new ArrayList();
+		}
+		public void addChild(TreeObject child) {
+			children.add(child);
+			child.setParent(this);
+		}
+		public void removeChild(TreeObject child) {
+			children.remove(child);
+			child.setParent(null);
+		}
+		public TreeObject [] getChildren() {
+			return (TreeObject [])children.toArray(new TreeObject[children.size()]);
+		}
+		public boolean hasChildren() {
+			return children.size()>0;
+		}
+	}
 
+	class ViewContentProvider implements IStructuredContentProvider, 
+										   ITreeContentProvider {
+		private TreeParent invisibleRoot;
+
+		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+		}
+		public void dispose() {
+		}
+		public Object[] getElements(Object parent) {
+			if (parent.equals(getViewSite())) {
+				if (invisibleRoot==null) initialize();
+				return getChildren(invisibleRoot);
+			}
+			return getChildren(parent);
+		}
+		public Object getParent(Object child) {
+			if (child instanceof TreeObject) {
+				return ((TreeObject)child).getParent();
+			}
+			return null;
+		}
+		public Object [] getChildren(Object parent) {
+			if (parent instanceof TreeParent) {
+				return ((TreeParent)parent).getChildren();
+			}
+			return new Object[0];
+		}
+		public boolean hasChildren(Object parent) {
+			if (parent instanceof TreeParent)
+				return ((TreeParent)parent).hasChildren();
+			return false;
+		}
+/*
+ * We will set up a dummy model to initialize tree hierarchy.
+ * In a real code, you will connect to a real model and
+ * expose its hierarchy.
+ */
+		private void initialize() {
+			TreeObject to1 = new TreeObject("bla");
+			TreeObject to2 = new TreeObject("Leaf 2");
+			TreeObject to3 = new TreeObject("Leaf 3");
+			TreeParent p1 = new TreeParent("Periph 1");
+			p1.addChild(to1);
+			p1.addChild(to2);
+			p1.addChild(to3);
+			
+			TreeObject to4 = new TreeObject("Leaf 4");
+			TreeParent p2 = new TreeParent("Periph 2");
+			p2.addChild(to4);
+			
+			TreeParent root = new TreeParent("Peripherals");
+			root.addChild(p1);
+			root.addChild(p2);
+			
+			invisibleRoot = new TreeParent("");
+			invisibleRoot.addChild(root);
+		}
+	}
+	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
+
+		public String getText(Object obj) {
+			return obj.toString();
+		}
+		public Image getImage(Object obj) {
+			String imageKey = ISharedImages.IMG_OBJ_ELEMENT;
+			if (obj instanceof TreeParent)
+			   imageKey = ISharedImages.IMG_OBJ_FOLDER;
+			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+		}
+		@Override
+		public Image getColumnImage(Object element, int columnIndex) {
+			
+			return null;
+		}
+		@Override
+		//objet pour l'objet en question et index pour l'index de column
+		public String getColumnText(Object element, int index) {
+			if(index == 0) return element.toString();
+			else if(index == 1) return ((TreeObject)element).getS();
+			else if(index == 2) return ("bla bla");
+			return null;
+		}
+		
+	}
+	
+	class NameSorter extends ViewerSorter {
+	}
 
 	/**
 	 * The constructor.
@@ -85,16 +208,45 @@ public class GlobalView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		//TODO récupérer l'activateur avec Activator.getDefault();
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		Tree tree = viewer.getTree();
+		TreeColumn col0 = new TreeColumn(tree, SWT.NONE);
+		col0.setText("col0");
+		TreeColumn col1 = new TreeColumn(tree, SWT.NONE);
+		col1.setText("col1");
+		TreeColumn col2 = new TreeColumn(tree, SWT.NONE);
+		col2.setText("col2");
+		TreeColumn col3 = new TreeColumn(tree, SWT.NONE);
+		col3.setText("col3");
+		TreeColumn col4 = new TreeColumn(tree, SWT.NONE);
+		col4.setText("col4");
+		TreeColumn col5 = new TreeColumn(tree, SWT.NONE);
+		col5.setText("col5");
+		TreeColumn col6 = new TreeColumn(tree, SWT.NONE);
+		col6.setText("col6");
+		TreeColumn col7 = new TreeColumn(tree, SWT.NONE);
+		col7.setText("col7");
+		TreeColumn col8 = new TreeColumn(tree, SWT.NONE);
+		col8.setText("col8");
+		
+		tree.setHeaderVisible(true);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider(this));
+		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-
+		col0.pack();
+		col1.pack();
+		col2.pack();
+		col3.pack();
+		col4.pack();
+		col5.pack();
+		col6.pack();
+		col7.pack();
+		col8.pack();
+		
 		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "TestVue.viewer");
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -162,6 +314,8 @@ public class GlobalView extends ViewPart {
 		action2.setToolTipText("Action 2 tooltip");
 		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		
+		
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
@@ -170,6 +324,7 @@ public class GlobalView extends ViewPart {
 			}
 		};
 	}
+
 
 	private void hookDoubleClickAction() {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -181,21 +336,9 @@ public class GlobalView extends ViewPart {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Vue globale",
+			"Sample View",
 			message);
 	}
-	
-	
-	/*Listener exitListener = new Listener() {
-		public void handleEvent(Event e) {
-			MessageBox dialog = new MessageBox(shell, SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
-			dialog.setText("Question");
-			dialog.setMessage("Exit?");
-			if (e.type == SWT.Close) e.doit = false;
-			if (dialog.open() != SWT.OK) return;
-			shell.dispose();
-		}
-	};*/
 
 	/**
 	 * Passing the focus request to the viewer's control.
@@ -203,4 +346,5 @@ public class GlobalView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+	
 }

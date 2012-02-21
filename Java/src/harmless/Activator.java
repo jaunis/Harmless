@@ -16,6 +16,8 @@ import java.util.Scanner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+//bla bla
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -28,7 +30,7 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private Chargeur chargeur;
 	private Updater updater;
-	private List<Peripheral> listePeripheriques;
+	public List<Peripheral> listePeripheriques;
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -51,7 +53,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		//TODO il faudra sans doute faire un truc plus propre pour récupérer le port
+		//TODO 
 		System.out.println("Veuillez entrer le port d'écoute:");
 		Scanner sc = new Scanner(System.in);
 		int port = Integer.parseInt(sc.nextLine());
@@ -108,6 +110,7 @@ public class Activator extends AbstractUIPlugin {
 						System.out.println("   " + local + ": " + listeItems.get(local));
 					}
 					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
+					
 				}
 			}
 		}

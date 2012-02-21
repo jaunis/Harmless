@@ -45,21 +45,21 @@ public class ViewContentProvider implements IStructuredContentProvider,
 			return false;
 		}
 /*
- * We will set up a dummy model to initialize tree heararchy.
+ * We will set up a dummy model to initialize tree hierarchy.
  * In a real code, you will connect to a real model and
  * expose its hierarchy.
  */
 		private void initialize() {
-			TreeObject to1 = new TreeObject("Leaf 1");
-			TreeObject to2 = new TreeObject("Leaf 2");
-			TreeObject to3 = new TreeObject("Leaf 3");
-			TreeParent p1 = new TreeParent("Parent 1");
+			TreeObject to1 = new TreeObject("Register1");
+			TreeObject to2 = new TreeObject("Register2");
+			TreeObject to3 = new TreeObject("Register3");
+			TreeParent p1 = new TreeParent("Peripheral1");
 			p1.addChild(to1);
 			p1.addChild(to2);
 			p1.addChild(to3);
 			
-			TreeObject to4 = new TreeObject("Leaf 4");
-			TreeParent p2 = new TreeParent("Parent 2");
+			TreeObject to4 = new TreeObject("Register4");
+			TreeParent p2 = new TreeParent("Peripheral2");
 			p2.addChild(to4);
 			
 			TreeParent root = new TreeParent("Root");
