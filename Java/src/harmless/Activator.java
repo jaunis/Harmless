@@ -1,15 +1,15 @@
 package harmless;
 
 import harmless.controller.Chargeur;
+import harmless.controller.EntreeStandard;
 import harmless.controller.Updater;
+import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
 
 import java.net.Socket;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,7 +30,12 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private Chargeur chargeur;
 	private Updater updater;
+<<<<<<< HEAD
 	public List<Peripheral> listePeripheriques;
+=======
+	private List<Peripheral> listePeripheriques;
+	private EntreeStandard entree;
+>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -62,10 +67,12 @@ public class Activator extends AbstractUIPlugin {
 		
 		listePeripheriques = chargeur.initialiserPeripheriques();
 		afficherEtat();
-		
-		socket = new Socket("localhost", port);
-		updater = new Updater(socket);
+		Thread.sleep(10);
+		updater = new Updater("localhost", port);
 		updater.start();
+		entree = new EntreeStandard();
+		entree.start();
+		
 	}
 	
 	public Updater getUpdater() {
@@ -86,13 +93,13 @@ public class Activator extends AbstractUIPlugin {
 
 	public void afficherEtat()
 	{
-		listePeripheriques.get(1).getListeRegistres().get(1).setValeur(33);
+		listePeripheriques.get(1).getListeRegistres().get(1).setValeurHexa("21");
 		for(Peripheral p: listePeripheriques)
 		{
 			System.out.println(p.getName() + ":");
 			for(Register r: p.getListeRegistres())
 			{
-				System.out.println(" " + r.getId() + " : " + r.getDescription() + ", " + r.getAdresse());
+				System.out.println(" " + r.getId() + " : " + r.getDescription() + ", " + r.getAddress());
 				System.out.println(" valeur: " + r.getValeurHexa());
 				for(Slice s: r.getListeSlices())
 				{
@@ -102,13 +109,7 @@ public class Activator extends AbstractUIPlugin {
 					{
 						System.out.println("   from " + range.getFrom() + " to " + range.getTo());
 					}
-					Hashtable<Integer, String> listeItems = s.getItems();
-					Enumeration<Integer> listeCles = listeItems.keys();
-					while(listeCles.hasMoreElements())
-					{
-						int local = listeCles.nextElement();
-						System.out.println("   " + local + ": " + listeItems.get(local));
-					}
+					System.out.println("   nom de l'item: " + s.getItems().get(s.getValeur()));
 					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
 					
 				}
@@ -132,5 +133,17 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
-
+	
+	public Register getRegistre(String id) throws RegistreNonTrouveException
+	{
+		for(Peripheral p: listePeripheriques)
+		{
+			for(Register r: p.getListeRegistres())
+			{
+				if(r.getId().equals(id))
+					return r;
+			}
+		}
+		throw new RegistreNonTrouveException(id);
+	}
 }

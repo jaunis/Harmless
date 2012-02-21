@@ -21,9 +21,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-/**
- * 
- */
 
 /**
  * @author Jean AUNIS
@@ -53,7 +50,7 @@ public class Chargeur {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			//System.exit(1);
 		}
 		
 		out.println("send");

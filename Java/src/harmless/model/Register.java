@@ -16,11 +16,8 @@ public class Register extends BitManager{
 	private String description;
 	private List<Slice> listeSlices;
 	private Peripheral peripherique;
-//<<<<<<< HEAD
 	private String address;
-//=======
-	private String adresse;
-//>>>>>>> c8aec1978cf6f431f8246d8e5d2d630893bca7ea
+
 	
 	public Register(Peripheral peripherique, String id, String description, String adresse, int size)
 	{
@@ -28,9 +25,8 @@ public class Register extends BitManager{
 		this.peripherique = peripherique;
 		this.id = id;
 		this.description = description;
-		this.adresse = adresse;
 		listeSlices = new ArrayList<Slice>();
-		this.address = "unspecified";
+		this.address = adresse == null? "unspecified": adresse;
 	}
 	/**
 	 * @return the peripherique
@@ -91,15 +87,15 @@ public class Register extends BitManager{
 		return address;
 	}
 	
-	public void setAddress(String bla)
+	public void setAddress(String address)
 	{
-	     this.address = bla;	
+	     this.address = address;	
 	}
 	
 	public String toString()
 	{
 		return id + ": " + description
-				+ "\t" + Integer.toHexString(getValeur());
+				+ "\t" + getValeurHexa();
 	}
 	
 	public void addBit(int position, Bit b)
@@ -111,16 +107,17 @@ public class Register extends BitManager{
 	{
 		listeSlices.add(s);
 	}
-	/**
-	 * @return the adresse
-	 */
-	public String getAdresse() {
-		return adresse;
-	}
-	/**
-	 * @param adresse the adresse to set
-	 */
-	public void setAdresse(String adresse) {
-		this.adresse = adresse;
-	}
+	
+//	public boolean equals(Object o)
+//	{
+//		if(!(o instanceof Register))
+//			return false;
+//		else
+//		{
+//			if(this.id.equals(((Register)o).getId()))
+//					return true;
+//			else
+//				return false;
+//		}
+//	}
 }

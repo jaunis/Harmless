@@ -1,13 +1,22 @@
-package harmless.views;
+package harmless.views.GlobalView;
 
 import harmless.model.Peripheral;
 import harmless.model.Register;
 import harmless.Activator;
 
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
+=======
+import harmless.views.communs.NameSorter;
+import harmless.views.communs.ViewLabelProvider;
+
+import java.util.ArrayList;
+import java.util.List;
+
+>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -24,8 +33,12 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+<<<<<<< HEAD
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+=======
+import org.eclipse.jface.viewers.TreeViewerColumn;
+>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -53,9 +66,11 @@ public class GlobalView extends ViewPart {
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
+	private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+<<<<<<< HEAD
 
 
 	 
@@ -196,6 +211,9 @@ public class GlobalView extends ViewPart {
 	
 	class NameSorter extends ViewerSorter {
 	}
+=======
+	
+>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 
 	/**
 	 * The constructor.
@@ -231,6 +249,7 @@ public class GlobalView extends ViewPart {
 		
 		tree.setHeaderVisible(true);
 		drillDownAdapter = new DrillDownAdapter(viewer);
+<<<<<<< HEAD
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
@@ -245,6 +264,25 @@ public class GlobalView extends ViewPart {
 		col7.pack();
 		col8.pack();
 		
+=======
+		
+		for(int i=0; i<=8; i++)
+		{
+			listeColonnes.add(new TreeViewerColumn(viewer, SWT.NONE));
+		}
+		
+		for(TreeViewerColumn tvc: listeColonnes)
+		{
+			tvc.getColumn().pack();
+		}
+		
+		viewer.setContentProvider(new GlobalViewContentProvider(this));
+		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setSorter(new NameSorter());
+		viewer.setInput(getViewSite());
+		viewer.getTree().setHeaderVisible(true);
+
+>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "TestVue.viewer");
 		makeActions();
