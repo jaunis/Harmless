@@ -1,9 +1,6 @@
-package harmless.views;
+package harmless.views.GlobalView;
 
 
-import harmless.Activator;
-import harmless.model.Peripheral;
-import harmless.model.Register;
 import harmless.views.communs.NameSorter;
 import harmless.views.communs.ViewLabelProvider;
 
@@ -20,15 +17,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -72,63 +64,6 @@ public class GlobalView extends ViewPart {
 	private Action doubleClickAction;
 	
 
-	/*
-	 * The content provider class is responsible for
-	 * providing objects to the view. It can wrap
-	 * existing objects in adapters or simply return
-	 * objects as-is. These objects may be sensitive
-	 * to the current input of the view, or ignore
-	 * it and always show the same content 
-	 * (like Task List, for example).
-	 */
-	class GlobalViewContentProvider implements IStructuredContentProvider, 
-	   ITreeContentProvider 
-	   {
-			public GlobalViewContentProvider()
-			{}
-			public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			}
-			public void dispose() {
-			}
-			public Object[] getElements(Object parent) {
-				if(parent.equals(getViewSite()))
-					return Activator.getDefault().getListePeripheriques().toArray();
-				return getChildren(parent);
-			}
-			public Object getParent(Object child) {
-				if(child instanceof Peripheral)
-					return null;
-				else if(child instanceof Register)
-					return ((Register)child).getPeripherique();
-				else
-					return null;
-			}
-			public Object [] getChildren(Object parent) {
-				if (parent instanceof Peripheral) {
-					return ((Peripheral)parent).getListeRegistres().toArray();
-				}
-				return new Object[0];
-			}
-			public boolean hasChildren(Object parent) {
-				if (parent instanceof Peripheral)
-					return !((Peripheral)parent).getListeRegistres().isEmpty();
-				else if(parent.equals(getViewSite()))
-					return true;
-				return false;
-			}
-			
-		}
-
-	class GlobalViewLabelProvider extends LabelProvider {
-
-		public String getText(Object obj) {
-			return obj.toString();
-		}
-		public Image getImage(Object obj) {
-			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		}
-	}
 	/**
 	 * The constructor.
 	 */
@@ -154,7 +89,7 @@ public class GlobalView extends ViewPart {
 			tvc.getColumn().pack();
 		}
 		
-		viewer.setContentProvider(new GlobalViewContentProvider());
+		viewer.setContentProvider(new GlobalViewContentProvider(this));
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
