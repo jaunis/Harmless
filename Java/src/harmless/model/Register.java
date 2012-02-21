@@ -95,7 +95,7 @@ public class Register extends BitManager{
 	public String toString()
 	{
 		return id + ": " + description
-				+ "\t" + Integer.toHexString(getValeur());
+				+ "\t" + getValeurHexa();
 	}
 	
 	public void addBit(int position, Bit b)

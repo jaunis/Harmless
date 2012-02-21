@@ -1,9 +1,14 @@
 package harmless.views;
 
 
+import harmless.Activator;
+import harmless.model.Peripheral;
+import harmless.model.Register;
 import harmless.views.communs.NameSorter;
-import harmless.views.communs.ViewContentProvider;
 import harmless.views.communs.ViewLabelProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -15,9 +20,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
@@ -55,12 +66,11 @@ public class GlobalView extends ViewPart {
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
+	private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	//final Display display = new Display();
-	//final Shell shell = new Shell(display);
-	//shell.setText("SWT and Swing/AWT Example");
+	
 
 	/*
 	 * The content provider class is responsible for
@@ -71,9 +81,54 @@ public class GlobalView extends ViewPart {
 	 * it and always show the same content 
 	 * (like Task List, for example).
 	 */
-	 
+	class GlobalViewContentProvider implements IStructuredContentProvider, 
+	   ITreeContentProvider 
+	   {
+			public GlobalViewContentProvider()
+			{}
+			public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			}
+			public void dispose() {
+			}
+			public Object[] getElements(Object parent) {
+				if(parent.equals(getViewSite()))
+					return Activator.getDefault().getListePeripheriques().toArray();
+				return getChildren(parent);
+			}
+			public Object getParent(Object child) {
+				if(child instanceof Peripheral)
+					return null;
+				else if(child instanceof Register)
+					return ((Register)child).getPeripherique();
+				else
+					return null;
+			}
+			public Object [] getChildren(Object parent) {
+				if (parent instanceof Peripheral) {
+					return ((Peripheral)parent).getListeRegistres().toArray();
+				}
+				return new Object[0];
+			}
+			public boolean hasChildren(Object parent) {
+				if (parent instanceof Peripheral)
+					return !((Peripheral)parent).getListeRegistres().isEmpty();
+				else if(parent.equals(getViewSite()))
+					return true;
+				return false;
+			}
+			
+		}
 
+	class GlobalViewLabelProvider extends LabelProvider {
 
+		public String getText(Object obj) {
+			return obj.toString();
+		}
+		public Image getImage(Object obj) {
+			String imageKey = ISharedImages.IMG_OBJ_FOLDER;
+			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
+		}
+	}
 	/**
 	 * The constructor.
 	 */
@@ -88,10 +143,22 @@ public class GlobalView extends ViewPart {
 		//TODO récupérer l'activateur avec Activator.getDefault();
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider(this));
+		
+		for(int i=0; i<=8; i++)
+		{
+			listeColonnes.add(new TreeViewerColumn(viewer, SWT.NONE));
+		}
+		
+		for(TreeViewerColumn tvc: listeColonnes)
+		{
+			tvc.getColumn().pack();
+		}
+		
+		viewer.setContentProvider(new GlobalViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
+		viewer.getTree().setHeaderVisible(true);
 
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
