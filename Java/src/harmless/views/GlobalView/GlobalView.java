@@ -175,12 +175,9 @@ public class GlobalView extends ViewPart {
 				Object elem = cell.getElement();
 				if(elem instanceof List<?>)
 				{
-					System.out.println("indice de colonne: " + cell.getColumnIndex());
 					Bit bit = ((List<Bit>)elem).get(cell.getColumnIndex()-1);
-					Register reg = bit.getRegistre();
-					
-					showMessage("Double-click detected on bit " + (cell.getColumnIndex()-1)
-							+ " de valeur " + bit.getValeur() + " du registre " + reg.toString());
+					bit.setValeur(bit.getValeur()^1);
+					viewer.refresh();
 				}
 				else
 				{
