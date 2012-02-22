@@ -1,10 +1,13 @@
 package harmless.views.GlobalView;
 
 
+import harmless.model.Bit;
+import harmless.model.Register;
 import harmless.views.communs.NameSorter;
-import harmless.views.communs.ViewLabelProvider;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -14,12 +17,13 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
@@ -80,13 +84,11 @@ public class GlobalView extends ViewPart {
 			listeColonnes.add(new TreeViewerColumn(viewer, SWT.NONE));
 		}
 		
-		int i = 0;
 		for(TreeViewerColumn tvc: listeColonnes)
 		{
 			//tvc.setLabelProvider(viewer.getLabelProvider(i));
 			tvc.getColumn().pack();
 			tvc.getColumn().setWidth(100);
-			i++;
 		}
 		viewer.getTree().setHeaderVisible(true);
 		drillDownAdapter = new DrillDownAdapter(viewer);
@@ -167,9 +169,23 @@ public class GlobalView extends ViewPart {
 				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
+				Point p = Display.getCurrent().getCursorLocation();
+				Point pRelatif = Display.getCurrent().map(null, Display.getCurrent().getCursorControl(), p);
+				ViewerCell cell = viewer.getCell(pRelatif);
+				Object elem = cell.getElement();
+				if(elem instanceof List<?>)
+				{
+					System.out.println("indice de colonne: " + cell.getColumnIndex());
+					Bit bit = ((List<Bit>)elem).get(cell.getColumnIndex()-1);
+					Register reg = bit.getRegistre();
+					
+					showMessage("Double-click detected on bit " + (cell.getColumnIndex()-1)
+							+ " de valeur " + bit.getValeur() + " du registre " + reg.toString());
+				}
+				else
+				{
+					showMessage("Double-click detected on " + elem.toString());
+				}
 			}
 		};
 	}

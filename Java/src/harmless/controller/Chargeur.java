@@ -118,7 +118,7 @@ public class Chargeur {
 		 */
 		for(int i = 0; i < taille; i++)
 		{
-			objRegistre.addBit(new Bit(0));
+			objRegistre.addBit(new Bit(0, objRegistre));
 		}
 		
 		String valeur = registreXml.getAttributeValue("value") == null? "0" : registreXml.getAttributeValue("value");

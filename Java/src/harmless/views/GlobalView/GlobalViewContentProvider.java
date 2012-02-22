@@ -39,6 +39,7 @@ class GlobalViewContentProvider implements IStructuredContentProvider,
 				return Activator.getDefault().getListePeripheriques().toArray();
 			return getChildren(parent);
 		}
+		@SuppressWarnings("unchecked")
 		public Object getParent(Object child) {
 			if(child instanceof Peripheral)
 				return null;

@@ -30,6 +30,7 @@ class GlobalViewLabelProvider extends LabelProvider
 		else
 			return null;
 	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		if(element instanceof Peripheral)

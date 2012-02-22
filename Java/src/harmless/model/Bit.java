@@ -42,8 +42,9 @@ public class Bit {
 		this.valeur = valeur;
 	}
 
-	public Bit(int valeur) {
+	public Bit(int valeur, Register registre) {
 		this.valeur = valeur;
+		this.registre = registre;
 	}
 	
 	public String toString()
