@@ -175,7 +175,7 @@ public class GlobalView extends ViewPart {
 				Object elem = cell.getElement();
 				if(elem instanceof List<?>)
 				{
-					Bit bit = ((List<Bit>)elem).get(cell.getColumnIndex()-1);
+					Bit bit = ((List<Bit>)elem).get(8 - cell.getColumnIndex());
 					bit.setValeur(bit.getValeur()^1);
 					viewer.refresh();
 				}

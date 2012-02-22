@@ -66,7 +66,7 @@ class GlobalViewLabelProvider extends LabelProvider
 			{
 				myElement = (List<Bit>) element;
 				if(columnIndex >=1 && columnIndex <= 8)
-					return myElement.get(columnIndex-1).toString();
+					return myElement.get(8 - columnIndex).toString();
 				else return null;
 			}
 			catch(ClassCastException e)
