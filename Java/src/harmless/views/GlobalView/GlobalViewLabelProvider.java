@@ -1,11 +1,17 @@
 package harmless.views.GlobalView;
 
+import harmless.Activator;
 import harmless.model.Bit;
 import harmless.model.Peripheral;
 import harmless.model.Register;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
+import javax.swing.text.View;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -15,6 +21,19 @@ import org.eclipse.ui.PlatformUI;
 class GlobalViewLabelProvider extends LabelProvider 
 								implements ITableLabelProvider {
 
+	
+	public static ImageDescriptor getImageDescriptor(String name) {
+		   String iconPath = "icons/";
+		   try {
+		       URL installURL = Activator.getDefault().getDescriptor().getInstallURL();
+		       URL url = new URL(installURL, iconPath + name);
+		       return ImageDescriptor.createFromURL(url);
+		   } catch (MalformedURLException e) {
+		       // should not happen
+		       return ImageDescriptor.getMissingImageDescriptor();
+		   }
+		}
+	
 	public String getText(Object obj) {
 		return obj.toString();
 	}
@@ -27,8 +46,29 @@ class GlobalViewLabelProvider extends LabelProvider
 		String imageKey = ISharedImages.IMG_OBJ_FOLDER;
 		if(columnIndex == 0)
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		else
-			return null;
+		else if(element instanceof List<?>)
+		{
+			List<Bit> myElement = null;
+			try
+			{
+				ImageDescriptor descriptor = null;
+				myElement = (List<Bit>) element;
+				if(columnIndex >=1 && columnIndex <= 8)
+				{
+					descriptor = (myElement.get(8 - columnIndex).getValeur()==0?
+								getImageDescriptor("bit_off.png"):
+								getImageDescriptor("bit_on.png"));
+					return descriptor.createImage();
+				}
+				else return null;
+			}
+			catch(ClassCastException e)
+			{
+				System.err.println("Une liste de bits est attendue.");
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 	@SuppressWarnings("unchecked")
 	@Override
@@ -59,22 +99,22 @@ class GlobalViewLabelProvider extends LabelProvider
 				return null;
 			}
 		}
-		else if(element instanceof List<?>)
-		{
-			List<Bit> myElement = null;
-			try
-			{
-				myElement = (List<Bit>) element;
-				if(columnIndex >=1 && columnIndex <= 8)
-					return myElement.get(8 - columnIndex).toString();
-				else return null;
-			}
-			catch(ClassCastException e)
-			{
-				System.err.println("Une liste de bits est attendue.");
-				e.printStackTrace();
-			}
-		}
+//		else if(element instanceof List<?>)
+//		{
+//			List<Bit> myElement = null;
+//			try
+//			{
+//				myElement = (List<Bit>) element;
+//				if(columnIndex >=1 && columnIndex <= 8)
+//					return myElement.get(8 - columnIndex).toString();
+//				else return null;
+//			}
+//			catch(ClassCastException e)
+//			{
+//				System.err.println("Une liste de bits est attendue.");
+//				e.printStackTrace();
+//			}
+//		}
 		return null;
 	}
 }

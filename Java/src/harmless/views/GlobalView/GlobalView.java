@@ -2,7 +2,6 @@ package harmless.views.GlobalView;
 
 
 import harmless.model.Bit;
-import harmless.model.Register;
 import harmless.views.communs.NameSorter;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -86,9 +86,10 @@ public class GlobalView extends ViewPart {
 		
 		for(TreeViewerColumn tvc: listeColonnes)
 		{
-			//tvc.setLabelProvider(viewer.getLabelProvider(i));
-			tvc.getColumn().pack();
-			tvc.getColumn().setWidth(100);
+			TreeColumn localColumn = tvc.getColumn();
+			localColumn.pack();
+			localColumn.setWidth(100);
+			localColumn.setAlignment(SWT.CENTER);
 		}
 		viewer.getTree().setHeaderVisible(true);
 		drillDownAdapter = new DrillDownAdapter(viewer);
