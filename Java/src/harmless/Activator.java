@@ -1,9 +1,9 @@
 package harmless;
 
 import harmless.controller.Chargeur;
-import harmless.controller.EntreeStandard;
+//import harmless.controller.EntreeStandard;
 import harmless.controller.Updater;
-import harmless.exceptions.RegistreNonTrouveException;
+//import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
@@ -30,12 +30,12 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private Chargeur chargeur;
 	private Updater updater;
-<<<<<<< HEAD
-	public List<Peripheral> listePeripheriques;
-=======
+//<<<<<<< HEAD
+	//public List<Peripheral> listePeripheriques;
+//=======
 	private List<Peripheral> listePeripheriques;
-	private EntreeStandard entree;
->>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
+	//private EntreeStandard entree;
+//>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -70,8 +70,8 @@ public class Activator extends AbstractUIPlugin {
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
 		updater.start();
-		entree = new EntreeStandard();
-		entree.start();
+		//entree = new EntreeStandard();
+		//entree.start();
 		
 	}
 	
@@ -134,7 +134,7 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	public Register getRegistre(String id) throws RegistreNonTrouveException
+	/*public Register getRegistre(String id) //throws RegistreNonTrouveException
 	{
 		for(Peripheral p: listePeripheriques)
 		{
@@ -144,6 +144,6 @@ public class Activator extends AbstractUIPlugin {
 					return r;
 			}
 		}
-		throw new RegistreNonTrouveException(id);
-	}
+		//throw new RegistreNonTrouveException(id);
+	}*/
 }
