@@ -132,7 +132,7 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	public Register getRegistre(String id) //throws RegistreNonTrouveException
+	public Register getRegistre(String id) throws RegistreNonTrouveException
 	{
 		for(Peripheral p: listePeripheriques)
 		{
