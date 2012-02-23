@@ -16,7 +16,7 @@ import java.util.Scanner;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-//bla bla
+
 
 /**
  * The activator class controls the plug-in life cycle
@@ -30,12 +30,10 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private Chargeur chargeur;
 	private Updater updater;
-//<<<<<<< HEAD
-	//public List<Peripheral> listePeripheriques;
-//=======
+
+	
 	private List<Peripheral> listePeripheriques;
-	//private EntreeStandard entree;
-//>>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
+	private EntreeStandard entree;
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -70,8 +68,8 @@ public class Activator extends AbstractUIPlugin {
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
 		updater.start();
-		//entree = new EntreeStandard();
-		//entree.start();
+		entree = new EntreeStandard();
+		entree.start();
 		
 	}
 	
@@ -134,7 +132,7 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	/*public Register getRegistre(String id) //throws RegistreNonTrouveException
+	public Register getRegistre(String id) //throws RegistreNonTrouveException
 	{
 		for(Peripheral p: listePeripheriques)
 		{
@@ -144,6 +142,6 @@ public class Activator extends AbstractUIPlugin {
 					return r;
 			}
 		}
-		//throw new RegistreNonTrouveException(id);
-	}*/
+		throw new RegistreNonTrouveException(id);
+	}
 }

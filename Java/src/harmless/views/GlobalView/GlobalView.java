@@ -5,13 +5,17 @@ import harmless.model.Register;
 import harmless.Activator;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 =======
+=======
+import harmless.model.Bit;
+import harmless.model.Register;
+>>>>>>> 9b2f2924481f73170df66534d667cd1970a2230c
 import harmless.views.communs.NameSorter;
-import harmless.views.communs.ViewLabelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,22 +30,32 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+<<<<<<< HEAD
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+=======
+>>>>>>> 9b2f2924481f73170df66534d667cd1970a2230c
 import org.eclipse.jface.viewers.TreeViewer;
 <<<<<<< HEAD
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 =======
 import org.eclipse.jface.viewers.TreeViewerColumn;
+<<<<<<< HEAD
 >>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+=======
+import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+>>>>>>> 9b2f2924481f73170df66534d667cd1970a2230c
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -227,6 +241,7 @@ public class GlobalView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+<<<<<<< HEAD
 		Tree tree = viewer.getTree();
 		TreeColumn col0 = new TreeColumn(tree, SWT.NONE);
 		col0.setText("col0");
@@ -265,6 +280,8 @@ public class GlobalView extends ViewPart {
 		col8.pack();
 		
 =======
+=======
+>>>>>>> 9b2f2924481f73170df66534d667cd1970a2230c
 		
 		for(int i=0; i<=8; i++)
 		{
@@ -273,16 +290,24 @@ public class GlobalView extends ViewPart {
 		
 		for(TreeViewerColumn tvc: listeColonnes)
 		{
+			//tvc.setLabelProvider(viewer.getLabelProvider(i));
 			tvc.getColumn().pack();
+			tvc.getColumn().setWidth(100);
 		}
+		viewer.getTree().setHeaderVisible(true);
+		drillDownAdapter = new DrillDownAdapter(viewer);
 		
 		viewer.setContentProvider(new GlobalViewContentProvider(this));
-		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setLabelProvider(new GlobalViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
+<<<<<<< HEAD
 		viewer.getTree().setHeaderVisible(true);
 
 >>>>>>> 1fdd69d87832cc416a8d80ea9988d8e71c4eb3ea
+=======
+		
+>>>>>>> 9b2f2924481f73170df66534d667cd1970a2230c
 		// Create the help context id for the viewer's control
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "TestVue.viewer");
 		makeActions();
@@ -356,9 +381,20 @@ public class GlobalView extends ViewPart {
 		
 		doubleClickAction = new Action() {
 			public void run() {
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
+				Point p = Display.getCurrent().getCursorLocation();
+				Point pRelatif = Display.getCurrent().map(null, Display.getCurrent().getCursorControl(), p);
+				ViewerCell cell = viewer.getCell(pRelatif);
+				Object elem = cell.getElement();
+				if(elem instanceof List<?>)
+				{
+					Bit bit = ((List<Bit>)elem).get(8 - cell.getColumnIndex());
+					bit.setValeur(bit.getValeur()^1);
+					viewer.refresh();
+				}
+				else
+				{
+					showMessage("Double-click detected on " + elem.toString());
+				}
 			}
 		};
 	}

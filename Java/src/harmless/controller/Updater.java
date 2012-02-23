@@ -87,8 +87,7 @@ public class Updater extends Thread {
 				initIO();
 				
 			}
-			
-			// TODO recevoir et effectuer les MAJ
+
 		}
 	//}
 
