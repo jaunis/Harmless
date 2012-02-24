@@ -62,7 +62,6 @@ public class GlobalView extends ViewPart {
 	private DrillDownAdapter drillDownAdapter;
 	private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
-	private Action action2;
 	private Action doubleClickAction;
 	
 
@@ -133,12 +132,10 @@ public class GlobalView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
-		manager.add(action2);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -163,18 +160,8 @@ public class GlobalView extends ViewPart {
 		};
 		action1.setText("Mettre à jour");
 		action1.setToolTipText("Demande au serveur le nouvel état du processeur");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		action1.setImageDescriptor(GlobalViewLabelProvider.getImageDescriptor("refresh.gif"));
 		
-		action2 = new Action() {
-			public void run() {
-				showMessage("Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
 				Point p = Display.getCurrent().getCursorLocation();

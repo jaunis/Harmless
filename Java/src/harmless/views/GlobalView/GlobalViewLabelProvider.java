@@ -1,6 +1,5 @@
 package harmless.views.GlobalView;
 
-import harmless.Activator;
 import harmless.model.Bit;
 import harmless.model.Peripheral;
 import harmless.model.Register;
@@ -9,8 +8,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import javax.swing.text.View;
-
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -25,8 +25,8 @@ class GlobalViewLabelProvider extends LabelProvider
 	public static ImageDescriptor getImageDescriptor(String name) {
 		   String iconPath = "icons/";
 		   try {
-		       URL installURL = Activator.getDefault().getDescriptor().getInstallURL();
-		       URL url = new URL(installURL, iconPath + name);
+			   URL installURL = FileLocator.find(Platform.getBundle("Harmless"), new Path("/"), null);
+			   URL url = new URL(installURL, iconPath + name);
 		       return ImageDescriptor.createFromURL(url);
 		   } catch (MalformedURLException e) {
 		       // should not happen
