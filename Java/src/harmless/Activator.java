@@ -7,12 +7,9 @@ import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
-
 import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
-
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 

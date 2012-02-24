@@ -2,15 +2,11 @@ package harmless.views.GlobalView;
 
 
 import harmless.Activator;
-import harmless.controller.UpdateEventListener;
 import harmless.controller.Updater;
 import harmless.model.Bit;
 import harmless.views.communs.NameSorter;
-
 import java.util.ArrayList;
-import java.util.EventObject;
 import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -113,15 +109,6 @@ public class GlobalView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
-		Activator.getDefault().getUpdater()
-								.addUpdateListener(new UpdateEventListener()
-									{
-										@Override
-										public void handleUpdateEvent(
-												EventObject e) {
-											viewer.refresh();
-										}
-									});
 	}
 
 	private void hookContextMenu() {
