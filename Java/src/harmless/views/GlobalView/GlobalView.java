@@ -1,10 +1,14 @@
 package harmless.views.GlobalView;
 
 
+import harmless.Activator;
+import harmless.controller.UpdateEventListener;
+import harmless.controller.Updater;
 import harmless.model.Bit;
 import harmless.views.communs.NameSorter;
 
 import java.util.ArrayList;
+import java.util.EventObject;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -71,6 +75,10 @@ public class GlobalView extends ViewPart {
 	 */
 	public GlobalView() {
 	}
+	
+	public TreeViewer getViewer() {
+		return viewer;
+	}
 
 	/**
 	 * This is a callback that will allow us
@@ -105,6 +113,15 @@ public class GlobalView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		Activator.getDefault().getUpdater()
+								.addUpdateListener(new UpdateEventListener()
+									{
+										@Override
+										public void handleUpdateEvent(
+												EventObject e) {
+											viewer.refresh();
+										}
+									});
 	}
 
 	private void hookContextMenu() {
@@ -143,7 +160,7 @@ public class GlobalView extends ViewPart {
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
-		manager.add(action2);
+		//manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
@@ -151,11 +168,14 @@ public class GlobalView extends ViewPart {
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				Updater updater = Activator.getDefault().getUpdater();
+				updater.demanderReception();
+				while(!updater.majRecue());
+				viewer.refresh();
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
+		action1.setText("Mettre à jour");
+		action1.setToolTipText("Demande au serveur le nouvel état du processeur");
 		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
 			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		

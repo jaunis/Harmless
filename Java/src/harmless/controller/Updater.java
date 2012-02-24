@@ -3,6 +3,7 @@ package harmless.controller;
 import harmless.Activator;
 import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Register;
+import harmless.views.GlobalView.GlobalView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +13,10 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -25,6 +30,7 @@ public class Updater extends Thread {
 	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
 	private PrintWriter out;
 	private InputStream ips;
+	private List<UpdateEventListener> _listeners = new ArrayList<UpdateEventListener>();
 		
 	public Updater(String serveur, int port) {
 		
@@ -39,7 +45,24 @@ public class Updater extends Thread {
 		majEnvoyee = false;
 	}
 
+	public synchronized void addUpdateListener(UpdateEventListener u)
+	{
+		_listeners.add(u);
+	}
 	
+	public synchronized void removeUpdateListener(UpdateEventListener u)
+	{
+		_listeners.remove(u);
+	}
+	
+	private synchronized void fireEvent()
+	{
+		UpdateEvent event = new UpdateEvent(this);
+		for(UpdateEventListener u: _listeners)
+		{
+			u.handleUpdateEvent(event);
+		}
+	}
 	public synchronized void run()
 	{
 		while(!stop)
@@ -85,6 +108,7 @@ public class Updater extends Thread {
 				}
 				majRecue = true;
 				initIO();
+				//fireEvent();
 				
 			}
 

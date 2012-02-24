@@ -1,7 +1,6 @@
 package harmless;
 
 import harmless.controller.Chargeur;
-import harmless.controller.EntreeStandard;
 import harmless.controller.Updater;
 import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Peripheral;
@@ -13,6 +12,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Scanner;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -29,7 +29,6 @@ public class Activator extends AbstractUIPlugin {
 	private Chargeur chargeur;
 	private Updater updater;
 	private List<Peripheral> listePeripheriques;
-	private EntreeStandard entree;
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -63,10 +62,7 @@ public class Activator extends AbstractUIPlugin {
 		afficherEtat();
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
-		updater.start();
-		entree = new EntreeStandard();
-		entree.start();
-		
+		updater.start();		
 	}
 	
 	public Updater getUpdater() {
