@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 
   envoi_fichier_par_socket("example.xml", newsockfd);
   close(newsockfd);
-  
   //boucle sur l'envoi de testMAJ.xml
   int cont = 1;
   while(cont)

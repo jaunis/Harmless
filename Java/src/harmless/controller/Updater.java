@@ -23,6 +23,7 @@ public class Updater extends Thread {
 	private String serveur;
 	private List<Register> listeMaj;
 	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
+	private Socket socket;
 	private PrintWriter out;
 	private InputStream ips;
 		
@@ -59,7 +60,6 @@ public class Updater extends Thread {
 		Document document = null;
 		synchronized(out)
 		{
-			out.println("send");
 			synchronized(ips)
 			{
 				
@@ -83,9 +83,7 @@ public class Updater extends Thread {
 					e.printStackTrace();
 				}
 				majRecue = true;
-				initIO();
-				//fireEvent();
-				
+				initIO();				
 			}
 
 		}
@@ -128,8 +126,9 @@ public class Updater extends Thread {
 	
 	private synchronized void initIO()
 	{
-		try {
-			Socket socket = new Socket(serveur, port);
+		try
+		{
+			socket = new Socket(serveur, port);
 			out = new PrintWriter(socket.getOutputStream(), true);
 			ips = socket.getInputStream();
 		} catch (UnknownHostException e) {
