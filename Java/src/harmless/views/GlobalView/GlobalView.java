@@ -195,23 +195,16 @@ public class GlobalView extends ViewPart {
 			"Vue globale",
 			message);
 	}
-	
-	
-	/*Listener exitListener = new Listener() {
-		public void handleEvent(Event e) {
-			MessageBox dialog = new MessageBox(shell, SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
-			dialog.setText("Question");
-			dialog.setMessage("Exit?");
-			if (e.type == SWT.Close) e.doit = false;
-			if (dialog.open() != SWT.OK) return;
-			shell.dispose();
-		}
-	};*/
 
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+	
+	public void dispose()
+	{
+		Activator.getDefault().getUpdater().arret();
 	}
 }

@@ -74,9 +74,9 @@ int main(int argc, char *argv[])
     n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
     if (n < 0) error("ERROR reading from socket");
     printf("Here is the message: %s\n",buffer);
-    if(!comp(buffer, "send\n"))
+    if(comp(buffer, "stop\n"))
           cont = 0;
-    else
+    else if(comp(buffer, "send\n"))
       envoi_fichier_par_socket("testMAJ.xml", newsockfd);
     //c'est assez moche de fermer et ouvrir à chaque fois, voir si on peut faire autrement
     close(newsockfd);

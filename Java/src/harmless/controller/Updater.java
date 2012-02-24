@@ -116,6 +116,7 @@ public class Updater extends Thread {
 	
 	public void arret()
 	{
+		out.println("stop");
 		stop = true;
 	}
 	
