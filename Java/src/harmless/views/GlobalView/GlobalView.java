@@ -60,7 +60,7 @@ public class GlobalView extends ViewPart {
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
-	private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
+	//private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
 	private Action doubleClickAction;
 	
@@ -84,11 +84,7 @@ public class GlobalView extends ViewPart {
 		
 		for(int i=0; i<=8; i++)
 		{
-			listeColonnes.add(new TreeViewerColumn(viewer, SWT.NONE));
-		}
-		
-		for(TreeViewerColumn tvc: listeColonnes)
-		{
+			TreeViewerColumn tvc = new TreeViewerColumn(viewer, SWT.NONE);
 			TreeColumn localColumn = tvc.getColumn();
 			localColumn.pack();
 			localColumn.setWidth(100);
@@ -173,6 +169,7 @@ public class GlobalView extends ViewPart {
 				{
 					Bit bit = ((List<Bit>)elem).get(8 - cell.getColumnIndex());
 					bit.setValeur(bit.getValeur()^1);
+					Activator.getDefault().getUpdater().addMaj(bit.getRegistre());
 					viewer.refresh();
 				}
 				else

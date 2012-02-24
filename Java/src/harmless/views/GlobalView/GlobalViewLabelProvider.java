@@ -1,5 +1,6 @@
 package harmless.views.GlobalView;
 
+import harmless.Activator;
 import harmless.model.Bit;
 import harmless.model.Peripheral;
 import harmless.model.Register;
@@ -25,7 +26,7 @@ class GlobalViewLabelProvider extends LabelProvider
 	public static ImageDescriptor getImageDescriptor(String name) {
 		   String iconPath = "icons/";
 		   try {
-			   URL installURL = FileLocator.find(Platform.getBundle("Harmless"), new Path("/"), null);
+			   URL installURL = FileLocator.find(Platform.getBundle(Activator.PLUGIN_ID), new Path("/"), null);
 			   URL url = new URL(installURL, iconPath + name);
 		       return ImageDescriptor.createFromURL(url);
 		   } catch (MalformedURLException e) {

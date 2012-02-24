@@ -9,8 +9,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -21,7 +22,7 @@ public class Updater extends Thread {
 	
 	private int port, nbVuesAppelantes;
 	private String serveur;
-	private List<Register> listeMaj;
+	private Set<Register> listeMaj;
 	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
 	private Socket socket;
 	private PrintWriter out;
@@ -33,7 +34,7 @@ public class Updater extends Thread {
 		this.port = port;
 		nbVuesAppelantes = 0;
 		initIO();
-		listeMaj = new ArrayList<Register>();
+		listeMaj = new HashSet<Register>();
 		stop = false;
 		recevoir = false;
 		envoyer = false;
