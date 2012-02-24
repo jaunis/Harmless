@@ -108,6 +108,7 @@ public class GlobalView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		Activator.getDefault().getUpdater().signalerOuverture();
 	}
 
 	private void hookContextMenu() {
@@ -205,6 +206,6 @@ public class GlobalView extends ViewPart {
 	
 	public void dispose()
 	{
-		Activator.getDefault().getUpdater().arret();
+		Activator.getDefault().getUpdater().signalerFermeture();
 	}
 }

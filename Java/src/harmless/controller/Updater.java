@@ -19,7 +19,7 @@ import org.jdom.input.SAXBuilder;
 
 public class Updater extends Thread {
 	
-	private int port;
+	private int port, nbVuesAppelantes;
 	private String serveur;
 	private List<Register> listeMaj;
 	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
@@ -31,6 +31,7 @@ public class Updater extends Thread {
 		
 		this.serveur = serveur;
 		this.port = port;
+		nbVuesAppelantes = 0;
 		initIO();
 		listeMaj = new ArrayList<Register>();
 		stop = false;
@@ -159,5 +160,28 @@ public class Updater extends Thread {
 		}
 		else
 			return false;
+	}
+	
+	/**
+	 * appeler cette méthode pour signaler à l'Updater qu'une vue va l'utiliser
+	 */
+	public void signalerOuverture()
+	{
+		nbVuesAppelantes++;
+	}
+	
+	/**
+	 * appeler cette méthode pour signaler à l'Updater qu'une vue utilisant l'Updater
+	 * a été fermée. Quand toutes les vues ont été fermées, l'appel de cette méthode 
+	 * provoque l'arrêt de l'Updater.
+	 */
+	public void signalerFermeture()
+	{
+		nbVuesAppelantes--;
+		if(nbVuesAppelantes == 0)
+			arret();
+		else if(nbVuesAppelantes < 0)
+			System.err.println("Erreur: une vue a signalé sa fermeture" 
+		+ " sans avoir signalé son ouverture; l'Updater n'est pas arrêté.");
 	}
 }
