@@ -7,9 +7,17 @@ import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
+
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
 import java.util.List;
 import java.util.Scanner;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -131,5 +139,18 @@ public class Activator extends AbstractUIPlugin {
 			}
 		}
 		throw new RegistreNonTrouveException(id);
+	}
+	
+	public static ImageDescriptor getImageDescriptor(String name) 
+	{
+	   String iconPath = "icons/";
+	   try {
+		   URL installURL = FileLocator.find(Platform.getBundle(PLUGIN_ID), new Path("/"), null);
+		   URL url = new URL(installURL, iconPath + name);
+	       return ImageDescriptor.createFromURL(url);
+	   } catch (MalformedURLException e) {
+	       // should not happen
+	       return ImageDescriptor.getMissingImageDescriptor();
+	   }
 	}
 }

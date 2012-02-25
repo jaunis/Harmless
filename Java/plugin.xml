@@ -26,7 +26,7 @@
             name="Etat slices"
             icon="icons/sample.gif"
             category="Harmless"
-            class="harmless.views.SlicesStateView"
+            class="harmless.views.SlicesView"
             id="harmless.views.SlicesStateView">
       </view>
    </extension>

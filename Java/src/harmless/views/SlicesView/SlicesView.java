@@ -1,4 +1,4 @@
-package harmless.views;
+package harmless.views.SlicesView;
 
 import harmless.views.communs.NameSorter;
 import harmless.views.communs.ViewContentProvider;
@@ -45,12 +45,12 @@ import org.eclipse.ui.part.ViewPart;
  * <p>
  */
 
-public class SlicesStateView extends ViewPart {
+public class SlicesView extends ViewPart {
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "harmless.views.GlobalView";
+	public static final String ID = "harmless.views.SlicesView";
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
@@ -72,7 +72,7 @@ public class SlicesStateView extends ViewPart {
 	/**
 	 * The constructor.
 	 */
-	public SlicesStateView() {
+	public SlicesView() {
 	}
 
 	/**
@@ -82,8 +82,8 @@ public class SlicesStateView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new ViewContentProvider(this));
-		viewer.setLabelProvider(new ViewLabelProvider());
+		viewer.setContentProvider(new SlicesViewContentProvider(this));
+		viewer.setLabelProvider(new SlicesViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
 
@@ -100,7 +100,7 @@ public class SlicesStateView extends ViewPart {
 		menuMgr.setRemoveAllWhenShown(true);
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				SlicesStateView.this.fillContextMenu(manager);
+				SlicesView.this.fillContextMenu(manager);
 			}
 		});
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());

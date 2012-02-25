@@ -1,4 +1,4 @@
-package harmless.views.GlobalView;
+package harmless.views.SlicesView;
 
 import harmless.Activator;
 import harmless.model.Bit;
@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-class GlobalViewLabelProvider extends LabelProvider 
+class SlicesViewLabelProvider extends LabelProvider 
 								implements ITableLabelProvider {
 
 	

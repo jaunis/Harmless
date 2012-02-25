@@ -5,8 +5,9 @@ import harmless.Activator;
 import harmless.controller.Updater;
 import harmless.model.Bit;
 import harmless.views.communs.NameSorter;
-import java.util.ArrayList;
+
 import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -26,7 +27,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
@@ -58,7 +58,7 @@ public class GlobalView extends ViewPart {
 	 */
 	public static final String ID = "harmless.views.GlobalView";
 
-	private TreeViewer viewer;
+	TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	//private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
@@ -147,7 +147,7 @@ public class GlobalView extends ViewPart {
 	}
 
 	private void makeActions() {
-		action1 = new Action() {
+		action1 = new Action(){
 			public void run() {
 				Updater updater = Activator.getDefault().getUpdater();
 				updater.demanderReception();
@@ -157,7 +157,7 @@ public class GlobalView extends ViewPart {
 		};
 		action1.setText("Mettre à jour");
 		action1.setToolTipText("Demande au serveur le nouvel état du processeur");
-		action1.setImageDescriptor(GlobalViewLabelProvider.getImageDescriptor("refresh.gif"));
+		action1.setImageDescriptor(Activator.getImageDescriptor("refresh.gif"));
 		
 		doubleClickAction = new Action() {
 			public void run() {
