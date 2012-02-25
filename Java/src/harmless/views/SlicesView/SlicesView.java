@@ -1,8 +1,8 @@
 package harmless.views.SlicesView;
 
+import harmless.Activator;
+import harmless.controller.Updater;
 import harmless.views.communs.NameSorter;
-import harmless.views.communs.ViewContentProvider;
-import harmless.views.communs.ViewLabelProvider;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -16,9 +16,11 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -55,7 +57,6 @@ public class SlicesView extends ViewPart {
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
-	private Action action2;
 	private Action doubleClickAction;
 
 	/*
@@ -81,6 +82,14 @@ public class SlicesView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		for(int i = 0; i<3; i++)
+		{
+			TreeViewerColumn tvc = new TreeViewerColumn(viewer, SWT.NONE);
+			TreeColumn localColumn = tvc.getColumn();
+			localColumn.pack();
+			localColumn.setWidth(100);
+			localColumn.setAlignment(SWT.CENTER);
+		}
 		drillDownAdapter = new DrillDownAdapter(viewer);
 		viewer.setContentProvider(new SlicesViewContentProvider(this));
 		viewer.setLabelProvider(new SlicesViewLabelProvider());
@@ -93,6 +102,7 @@ public class SlicesView extends ViewPart {
 		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		Activator.getDefault().getUpdater().signalerOuverture();
 	}
 
 	private void hookContextMenu() {
@@ -117,12 +127,10 @@ public class SlicesView extends ViewPart {
 	private void fillLocalPullDown(IMenuManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
-		manager.add(action2);
 	}
 
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
@@ -131,7 +139,6 @@ public class SlicesView extends ViewPart {
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
-		manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
@@ -139,23 +146,16 @@ public class SlicesView extends ViewPart {
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				showMessage("Action 1 executed");
+				Updater updater = Activator.getDefault().getUpdater();
+				updater.demanderReception();
+				while(!updater.majRecue());
+				viewer.refresh();
 			}
 		};
-		action1.setText("Action 1");
-		action1.setToolTipText("Action 1 tooltip");
-		action1.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-			getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
+		action1.setText("Mettre à jour");
+		action1.setToolTipText("Demande au serveur le nouvel état du processeur");
+		action1.setImageDescriptor(Activator.getImageDescriptor("refresh.gif"));
 		
-		action2 = new Action() {
-			public void run() {
-				showMessage("Action 2 executed");
-			}
-		};
-		action2.setText("Action 2");
-		action2.setToolTipText("Action 2 tooltip");
-		action2.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().
-				getImageDescriptor(ISharedImages.IMG_OBJS_INFO_TSK));
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
