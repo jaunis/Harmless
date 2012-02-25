@@ -1,11 +1,7 @@
 package harmless.views.SlicesView;
 
-import harmless.Activator;
-import harmless.model.Bit;
-import harmless.model.Peripheral;
 import harmless.model.Register;
-
-import java.util.List;
+import harmless.model.Slice;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -24,46 +20,48 @@ class SlicesViewContentProvider implements IStructuredContentProvider,
    										ITreeContentProvider 
    {
 		/**
-	 * 
-	 */
-	private final SlicesView slicesView;
-		public SlicesViewContentProvider(SlicesView slicesView)
+		 * 
+		 */
+		private final SlicesView slicesView;
+		private Register registreRacine;
+		
+		public SlicesViewContentProvider(SlicesView slicesView, Register registre)
 		{
-			this.slicesView = slicesView;}
+			this.slicesView = slicesView;
+			this.registreRacine = registre;
+		}
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 		}
 		public void dispose() {
 		}
 		public Object[] getElements(Object parent) {
 			if(parent.equals(this.slicesView.getViewSite()))
-				return Activator.getDefault().getListePeripheriques().toArray();
+			{
+				if(this.slicesView == null)
+					return new Object[0];
+				else
+					return new Object[]{this.registreRacine};
+			}
 			return getChildren(parent);
 		}
-		@SuppressWarnings("unchecked")
 		public Object getParent(Object child) {
-			if(child instanceof Peripheral)
+			if(child instanceof Register)
 				return null;
-			else if(child instanceof Register)
-				return ((Register)child).getPeripherique();
-			else if(child instanceof List<?>)
-				return ((List<Bit>)child).get(0).getRegistre();
+			else if(child instanceof Slice)
+				return ((Slice)child).getRegistre();
 			else
 				return null;
 		}
 		public Object [] getChildren(Object parent) {
-			if (parent instanceof Peripheral) 
-				return ((Peripheral)parent).getListeRegistres().toArray();
-			else if(parent instanceof Register)
-				return new Object[] {((Register)parent).getListeBits()};
+			if (parent instanceof Register) 
+				return ((Register)parent).getListeSlices().toArray();
 			return new Object[0];
 		}
 		public boolean hasChildren(Object parent) {
-			if (parent instanceof Peripheral)
-				return !((Peripheral)parent).getListeRegistres().isEmpty();
-			else if (parent instanceof Register)
-				return true;
+			if (parent instanceof Register)
+				return !((Register)parent).getListeSlices().isEmpty();
 			else if(parent.equals(this.slicesView.getViewSite()))
-				return true;
+					return true;
 			return false;
 		}
 		

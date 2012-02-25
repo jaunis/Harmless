@@ -5,13 +5,8 @@ import harmless.model.Bit;
 import harmless.model.Peripheral;
 import harmless.model.Register;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -61,18 +56,7 @@ class SlicesViewLabelProvider extends LabelProvider
 	}
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		if(element instanceof Peripheral)
-		{
-			Peripheral myElement = (Peripheral) element;
-			switch(columnIndex)
-			{
-			case 0:
-				return myElement.getName();
-			default:
-				return null;
-			}
-		}
-		else if(element instanceof Register)
+		if(element instanceof Register)
 		{
 			Register myElement = (Register) element;
 			switch(columnIndex)

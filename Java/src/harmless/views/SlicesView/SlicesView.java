@@ -91,7 +91,7 @@ public class SlicesView extends ViewPart {
 			localColumn.setAlignment(SWT.CENTER);
 		}
 		drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new SlicesViewContentProvider(this));
+		viewer.setContentProvider(new SlicesViewContentProvider(this, null));
 		viewer.setLabelProvider(new SlicesViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
