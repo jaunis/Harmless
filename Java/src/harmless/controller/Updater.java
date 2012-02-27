@@ -1,7 +1,5 @@
 package harmless.controller;
 
-import harmless.Activator;
-//import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Register;
 
 import java.io.IOException;
