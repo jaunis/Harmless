@@ -1,9 +1,8 @@
 package harmless;
 
 import harmless.controller.Chargeur;
-//import harmless.controller.EntreeStandard;
 import harmless.controller.Updater;
-//import harmless.exceptions.RegistreNonTrouveException;
+import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
@@ -33,7 +32,7 @@ public class Activator extends AbstractUIPlugin {
 
 	
 	private List<Peripheral> listePeripheriques;
-	//private EntreeStandard entree;
+
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -67,10 +66,7 @@ public class Activator extends AbstractUIPlugin {
 		afficherEtat();
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
-		updater.start();
-		//entree = new EntreeStandard();
-		//entree.start();
-		
+		updater.start();		
 	}
 	
 	public Updater getUpdater() {
@@ -132,7 +128,7 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	/*public Register getRegistre(String id) throws RegistreNonTrouveException
+	public Register getRegistre(String id) throws RegistreNonTrouveException
 	{
 		for(Peripheral p: listePeripheriques)
 		{
@@ -143,5 +139,5 @@ public class Activator extends AbstractUIPlugin {
 			}
 		}
 		throw new RegistreNonTrouveException(id);
-	}*/
+	}
 }

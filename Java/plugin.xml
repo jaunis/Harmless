@@ -12,7 +12,7 @@
             name="Vue globale"
             icon="icons/sample.gif"
             category="Harmless"
-            class="harmless.views.GlobalView.GlobalView"
+            class="harmless.views.globalview.GlobalView"
             id="harmless.views.GlobalView">
       </view>
       <view

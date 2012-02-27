@@ -9,8 +9,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -19,10 +20,11 @@ import org.jdom.input.SAXBuilder;
 
 public class Updater extends Thread {
 	
-	private int port;
+	private int port, nbVuesAppelantes;
 	private String serveur;
-	private List<Register> listeMaj;
+	private Set<Register> listeMaj;
 	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
+	private Socket socket;
 	private PrintWriter out;
 	private InputStream ips;
 		
@@ -30,15 +32,15 @@ public class Updater extends Thread {
 		
 		this.serveur = serveur;
 		this.port = port;
+		nbVuesAppelantes = 0;
 		initIO();
-		listeMaj = new ArrayList<Register>();
+		listeMaj = new HashSet<Register>();
 		stop = false;
 		recevoir = false;
 		envoyer = false;
 		majRecue = false;
 		majEnvoyee = false;
 	}
-
 	
 	public synchronized void run()
 	{
@@ -60,7 +62,6 @@ public class Updater extends Thread {
 		Document document = null;
 		synchronized(out)
 		{
-			out.println("send");
 			synchronized(ips)
 			{
 				
@@ -84,8 +85,7 @@ public class Updater extends Thread {
 					//e.printStackTrace();
 				}
 				majRecue = true;
-				initIO();
-				
+				initIO();				
 			}
 
 		}
@@ -118,6 +118,7 @@ public class Updater extends Thread {
 	
 	public void arret()
 	{
+		out.println("stop");
 		stop = true;
 	}
 	
@@ -128,8 +129,9 @@ public class Updater extends Thread {
 	
 	private synchronized void initIO()
 	{
-		try {
-			Socket socket = new Socket(serveur, port);
+		try
+		{
+			socket = new Socket(serveur, port);
 			out = new PrintWriter(socket.getOutputStream(), true);
 			ips = socket.getInputStream();
 		} catch (UnknownHostException e) {
@@ -159,5 +161,28 @@ public class Updater extends Thread {
 		}
 		else
 			return false;
+	}
+	
+	/**
+	 * appeler cette méthode pour signaler à l'Updater qu'une vue va l'utiliser
+	 */
+	public void signalerOuverture()
+	{
+		nbVuesAppelantes++;
+	}
+	
+	/**
+	 * appeler cette méthode pour signaler à l'Updater qu'une vue utilisant l'Updater
+	 * a été fermée. Quand toutes les vues ont été fermées, l'appel de cette méthode 
+	 * provoque l'arrêt de l'Updater.
+	 */
+	public void signalerFermeture()
+	{
+		nbVuesAppelantes--;
+		if(nbVuesAppelantes == 0)
+			arret();
+		else if(nbVuesAppelantes < 0)
+			System.err.println("Erreur: une vue a signalé sa fermeture" 
+		+ " sans avoir signalé son ouverture; l'Updater n'est pas arrêté.");
 	}
 }

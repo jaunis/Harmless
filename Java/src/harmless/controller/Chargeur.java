@@ -55,8 +55,14 @@ public class Chargeur {
 		
 		out.println("send");
 		SAXBuilder sxb = new SAXBuilder();
+		List<Peripheral> retour = traiterXML(sxb.build(ips));
 		
-		return traiterXML(sxb.build(ips));
+		out.flush();
+		out.close();
+		ips.close();
+		socket.close();
+		
+		return retour;
 	}
 	
 	
