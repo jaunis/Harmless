@@ -1,9 +1,9 @@
-package harmless.views.globalview;
+package harmless.views.slicesview;
 
 import harmless.Activator;
 import harmless.model.Bit;
-import harmless.model.Peripheral;
 import harmless.model.Register;
+import harmless.model.Slice;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-class GlobalViewLabelProvider extends LabelProvider 
+class SlicesViewLabelProvider extends LabelProvider 
 								implements ITableLabelProvider {
 
 	
@@ -40,7 +40,6 @@ class GlobalViewLabelProvider extends LabelProvider
 				if(columnIndex >=1 && columnIndex <= 8)
 				{
 					descriptor = (myElement.get(8 - columnIndex).getValeur()==0?
-
 								Activator.getImageDescriptor("bit_off.png"):
 								Activator.getImageDescriptor("bit_on.png"));
 					return descriptor.createImage();
@@ -55,21 +54,9 @@ class GlobalViewLabelProvider extends LabelProvider
 		}
 		return null;
 	}
-
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
-		if(element instanceof Peripheral)
-		{
-			Peripheral myElement = (Peripheral) element;
-			switch(columnIndex)
-			{
-			case 0:
-				return myElement.getName();
-			default:
-				return null;
-			}
-		}
-		else if(element instanceof Register)
+		if(element instanceof Register)
 		{
 			Register myElement = (Register) element;
 			switch(columnIndex)
@@ -84,22 +71,11 @@ class GlobalViewLabelProvider extends LabelProvider
 				return null;
 			}
 		}
-//		else if(element instanceof List<?>)
-//		{
-//			List<Bit> myElement = null;
-//			try
-//			{
-//				myElement = (List<Bit>) element;
-//				if(columnIndex >=1 && columnIndex <= 8)
-//					return myElement.get(8 - columnIndex).toString();
-//				else return null;
-//			}
-//			catch(ClassCastException e)
-//			{
-//				System.err.println("Une liste de bits est attendue.");
-//				e.printStackTrace();
-//			}
-//		}
+		else if(element instanceof Slice)
+		{
+			Slice myElement = (Slice) element;
+//			switch
+		}
 		return null;
 	}
 }
