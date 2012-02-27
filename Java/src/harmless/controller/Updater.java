@@ -1,7 +1,7 @@
 package harmless.controller;
 
 import harmless.Activator;
-import harmless.exceptions.RegistreNonTrouveException;
+//import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Register;
 
 import java.io.IOException;
@@ -73,23 +73,23 @@ public class Updater extends Thread {
 					List<Element> registresXml = racine.getChild("update").getChildren("register");
 					for(Element e: registresXml)
 					{
-						Register r = Activator.getDefault().getRegistre(e.getAttributeValue("id"));
-						r.setValeurHexa(e.getAttributeValue("value"));
+						//Register r = Activator.getDefault().getRegistre(e.getAttributeValue("id"));
+						//r.setValeurHexa(e.getAttributeValue("value"));
 						System.err.println("registre " + e.getAttributeValue("id") + " = " + e.getAttributeValue("value"));
 					}
 				} catch (JDOMException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (RegistreNonTrouveException e) {
-					e.printStackTrace();
+				}// catch (RegistreNonTrouveException e) {
+					//e.printStackTrace();
 				}
 				majRecue = true;
 				initIO();				
 			}
 
 		}
-	}
+	//}
 
 	private void envoyerUpdate()
 	{

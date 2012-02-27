@@ -12,7 +12,7 @@
             name="Vue globale"
             icon="icons/sample.gif"
             category="Harmless"
-            class="harmless.views.GlobalView.GlobalView"
+            class="harmless.views.globalview.GlobalView"
             id="harmless.views.GlobalView">
       </view>
       <view
@@ -26,7 +26,7 @@
             name="Etat slices"
             icon="icons/sample.gif"
             category="Harmless"
-            class="harmless.views.SlicesView.SlicesView"
+            class="harmless.views.slicesview.SlicesView"
             id="harmless.views.SlicesView">
       </view>
    </extension>
