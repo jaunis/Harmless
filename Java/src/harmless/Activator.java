@@ -33,7 +33,7 @@ public class Activator extends AbstractUIPlugin {
 
 	
 	private List<Peripheral> listePeripheriques;
-	private EntreeStandard entree;
+	//private EntreeStandard entree;
 	
 	public Chargeur getChargeur() {
 		return chargeur;
@@ -68,8 +68,8 @@ public class Activator extends AbstractUIPlugin {
 		Thread.sleep(10);
 		updater = new Updater("localhost", port);
 		updater.start();
-		entree = new EntreeStandard();
-		entree.start();
+		//entree = new EntreeStandard();
+		//entree.start();
 		
 	}
 	
@@ -132,7 +132,7 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 	
-	public Register getRegistre(String id) throws RegistreNonTrouveException
+	/*public Register getRegistre(String id) throws RegistreNonTrouveException
 	{
 		for(Peripheral p: listePeripheriques)
 		{
@@ -143,5 +143,5 @@ public class Activator extends AbstractUIPlugin {
 			}
 		}
 		throw new RegistreNonTrouveException(id);
-	}
+	}*/
 }
