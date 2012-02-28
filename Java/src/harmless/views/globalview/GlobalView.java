@@ -172,18 +172,13 @@ public class GlobalView extends ViewPart {
 				}
 				else if(elem instanceof Register)
 				{
-//					UpdateSlicesView slicesView = (UpdateSlicesView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(UpdateSlicesView.ID);
-//					if(slicesView == null)
-//					{
-						try {
-							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(UpdateSlicesView.ID);
-						} catch (PartInitException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-//					}
-//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(slicesView);
-					
+					try 
+					{
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(UpdateSlicesView.ID);
+					} catch (PartInitException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				else
 				{
