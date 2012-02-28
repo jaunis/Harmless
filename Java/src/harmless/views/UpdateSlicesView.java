@@ -47,7 +47,7 @@ public class UpdateSlicesView extends ViewPart {
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "harmless.views.GlobalView";
+	public static final String ID = "harmless.views.UpdateSlicesView";
 
 	private TreeViewer viewer;
 	private DrillDownAdapter drillDownAdapter;

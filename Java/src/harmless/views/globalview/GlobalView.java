@@ -4,6 +4,9 @@ package harmless.views.globalview;
 import harmless.Activator;
 import harmless.controller.Updater;
 import harmless.model.Bit;
+import harmless.model.Register;
+import harmless.views.UpdateSlicesView;
+import harmless.views.slicesview.SlicesView;
 
 import java.util.List;
 
@@ -165,6 +168,13 @@ public class GlobalView extends ViewPart {
 					bit.setValeur(bit.getValeur()^1);
 					Activator.getDefault().getUpdater().addMaj(bit.getRegistre());
 					viewer.refresh();
+				}
+				else if(elem instanceof Register)
+				{
+					UpdateSlicesView slicesView = (UpdateSlicesView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(UpdateSlicesView.ID);
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().bringToTop(slicesView);
+					slicesView.setFocus();
+					
 				}
 				else
 				{
