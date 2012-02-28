@@ -90,7 +90,7 @@ public class GlobalView extends ViewPart {
 		viewer.setInput(getViewSite());
 		
 		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
+		//PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
