@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
@@ -171,9 +172,17 @@ public class GlobalView extends ViewPart {
 				}
 				else if(elem instanceof Register)
 				{
-					UpdateSlicesView slicesView = (UpdateSlicesView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(UpdateSlicesView.ID);
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().bringToTop(slicesView);
-					slicesView.setFocus();
+//					UpdateSlicesView slicesView = (UpdateSlicesView)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(UpdateSlicesView.ID);
+//					if(slicesView == null)
+//					{
+						try {
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(UpdateSlicesView.ID);
+						} catch (PartInitException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+//					}
+//					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(slicesView);
 					
 				}
 				else
