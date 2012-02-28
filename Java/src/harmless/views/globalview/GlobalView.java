@@ -6,7 +6,6 @@ import harmless.controller.Updater;
 import harmless.model.Bit;
 import harmless.model.Register;
 import harmless.views.UpdateSlicesView;
-import harmless.views.slicesview.SlicesView;
 
 import java.util.List;
 
@@ -176,13 +175,10 @@ public class GlobalView extends ViewPart {
 					{
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(UpdateSlicesView.ID);
 					} catch (PartInitException e) {
-						// TODO Auto-generated catch block
+						showMessage("Erreur: impossible d'ouvrir la vue " + UpdateSlicesView.ID);
 						e.printStackTrace();
 					}
-				}
-				else
-				{
-					showMessage("Double-click detected on " + elem.toString());
+					//TODO dire à la vue quel registre afficher
 				}
 			}
 		};

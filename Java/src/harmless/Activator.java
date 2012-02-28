@@ -17,7 +17,10 @@ import java.util.Scanner;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -61,10 +64,33 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		//TODO 
-		System.out.println("Veuillez entrer le port d'écoute:");
-		Scanner sc = new Scanner(System.in);
-		int port = Integer.parseInt(sc.nextLine());
+		//TODO demander le port de façon plus "propre"
+		InputDialog myDialog = new InputDialog(Display.getCurrent().getActiveShell(), 
+												"Port", 
+												"Veuillez entrer le port d'écoute:",
+												"3239",
+												new IInputValidator(){
+
+													@Override
+													public String isValid(
+															String newText) {
+														try
+														{
+															Integer.parseInt(newText);
+														}
+														catch(NumberFormatException e)
+														{
+															return "Entrez un nombre décimal.";
+														}
+														return null;
+													}
+			
+												});
+		myDialog.open();
+		int port = Integer.parseInt(myDialog.getValue());
+//		System.out.println("Veuillez entrer le port d'écoute:");
+//		Scanner sc = new Scanner(System.in);
+//		int port = Integer.parseInt(sc.nextLine());
 		Socket socket = new Socket("localhost", port);
 		chargeur = new Chargeur(socket);
 		

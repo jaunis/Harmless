@@ -18,6 +18,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.osgi.framework.Bundle;
 
 public class Updater extends Thread {
 	
@@ -120,6 +121,12 @@ public class Updater extends Thread {
 	public void arret()
 	{
 		out.println("stop");
+		try {
+			Activator.getDefault().getBundle().stop(Bundle.STOP_TRANSIENT);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		stop = true;
 	}
 	
