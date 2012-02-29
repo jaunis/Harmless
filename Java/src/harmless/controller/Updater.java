@@ -25,7 +25,7 @@ public class Updater extends Thread {
 	private int port, nbVuesAppelantes;
 	private String serveur;
 	private Set<Register> listeMaj;
-	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
+	private boolean stop, recevoir, envoyer, majRecue;
 	private Socket socket;
 	private PrintWriter out;
 	private InputStream ips;
@@ -41,7 +41,6 @@ public class Updater extends Thread {
 		recevoir = false;
 		envoyer = false;
 		majRecue = false;
-		majEnvoyee = false;
 	}
 	
 	public synchronized void run()
@@ -100,6 +99,7 @@ public class Updater extends Thread {
 		synchronized(listeMaj)
 		{
 			out.println("receive");
+			out.flush();
 			for(Register reg: listeMaj)
 			{
 				String message = reg.getId() + " " + reg.getValeurHexa();
@@ -111,7 +111,7 @@ public class Updater extends Thread {
 			//2 précautions valent mieux qu'une
 			out.flush();
 			listeMaj.removeAll(listeMaj);
-			majEnvoyee = true;
+			initIO();
 		}
 		
 	}
@@ -172,13 +172,7 @@ public class Updater extends Thread {
 	
 	public boolean majEnvoyee()
 	{
-		if(majEnvoyee)
-		{
-			majEnvoyee = false;
-			return true;
-		}
-		else
-			return false;
+		return listeMaj.isEmpty();
 	}
 	
 	/**

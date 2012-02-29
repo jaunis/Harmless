@@ -160,9 +160,14 @@ public class GlobalView extends ViewPart {
 			public void run()
 			{
 				Updater updater = Activator.getDefault().getUpdater();
-				updater.demanderEnvoi();
-				while(!updater.majEnvoyee());
-				System.out.println("Maj envoyée.");
+				if(updater.majEnvoyee())
+					System.out.println("Aucune mise à jour à envoyer.");
+				else
+				{
+					updater.demanderEnvoi();
+					while(!updater.majEnvoyee());
+					System.out.println("Maj envoyée.");
+				}
 			}
 		};
 		

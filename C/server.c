@@ -14,7 +14,7 @@
 int comp(char*, char*);
 int init_socket_server(int);
 void envoi_fichier_par_socket(char*, int);
-void reception_fichier_par_socket(char*, int);
+void reception_fichier_par_socket(char*);
 
 //envoie de message en cas d'erreur
 void error(const char *msg)
@@ -75,12 +75,13 @@ int main(int argc, char *argv[])
     n = read(newsockfd,buffer,(TAILLE_MAXI)-1);
     if (n < 0) error("ERROR reading from socket");
     printf("Here is the message: %s\n",buffer);
-    if(comp(buffer, "stop\n"))
+    char* ligne1 = strtok(buffer, "\n");
+    if(comp(ligne1, "stop"))
           cont = 0;
-    else if(comp(buffer, "send\n"))
+    else if(comp(ligne1, "send"))
       envoi_fichier_par_socket("testMAJ.xml", newsockfd);
-    else if(comp(buffer, "receive\n"))
-      reception_fichier_par_socket("testEnvoiModif.txt", newsockfd);
+    else if(comp(ligne1, "receive"))
+      reception_fichier_par_socket("testEnvoiModif.txt");
     //c'est assez moche de fermer et ouvrir à chaque fois, voir si on peut faire autrement
     close(newsockfd);
   }
@@ -168,7 +169,11 @@ void envoi_fichier_par_socket(char* nomFichier, int socket_client)
     }
 }
 
-void reception_fichier_par_socket(char* nomFichier, int socket_client)
+/**
+ * écrit dans un fichier la mise à jour reçue.
+ * on suppose que strtok a été appelé une fois auparavant
+ */
+void reception_fichier_par_socket(char* nomFichier)
 {
   char buffer[TAILLE_MAXI];
   int n;
@@ -176,14 +181,11 @@ void reception_fichier_par_socket(char* nomFichier, int socket_client)
     //------------------------------------------------------------------
   if(fichier != NULL)
   {
-    bzero(buffer, TAILLE_MAXI);
-    int n = read(socket_client,buffer,(TAILLE_MAXI)-1);
-    if (n < 0) error("ERROR reading from socket");
-    while(!comp(buffer, "end\n"))
+    char* ligne = strtok(NULL, "\n");
+    while(!comp(ligne, "end"))
     {
-      fprintf(fichier, "%s", buffer);
-      n = read(socket_client,buffer,(TAILLE_MAXI)-1);
-      if (n < 0) error("ERROR reading from socket");
+      fprintf(fichier, "%s", ligne);
+      ligne = strtok(NULL, "\n");
     }
     fclose(fichier);
   }
