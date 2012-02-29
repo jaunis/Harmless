@@ -50,6 +50,7 @@ public class GlobalView extends ViewPart {
 	private DrillDownAdapter drillDownAdapter;
 	//private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
+	private Action action2;
 	private Action doubleClickAction;
 
 
@@ -95,47 +96,47 @@ public class GlobalView extends ViewPart {
 		// Create the help context id for the viewer's control
 		//PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
 		makeActions();
-		hookContextMenu();
+		//hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
 		Activator.getDefault().getUpdater().signalerOuverture();
 	}
 
-	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				GlobalView.this.fillContextMenu(manager);
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
-	}
+//	private void hookContextMenu() {
+//		MenuManager menuMgr = new MenuManager("#PopupMenu");
+//		menuMgr.setRemoveAllWhenShown(true);
+//		menuMgr.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				GlobalView.this.fillContextMenu(manager);
+//			}
+//		});
+//		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+//		viewer.getControl().setMenu(menu);
+//		getSite().registerContextMenu(menuMgr, viewer);
+//	}
 
 	private void contributeToActionBars() {
 		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
+		//fillLocalPullDown(bars.getMenuManager());
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(new Separator());
-	}
+//	private void fillLocalPullDown(IMenuManager manager) {
+//		manager.add(action1);
+//		manager.add(new Separator());
+//	}
 
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
+//	private void fillContextMenu(IMenuManager manager) {
+//		manager.add(action1);
+//		manager.add(new Separator());
+//		drillDownAdapter.addNavigationActions(manager);
+//		// Other plug-ins can contribute there actions here
+//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+//	}
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
-		//manager.add(action2);
+		manager.add(action2);
 		manager.add(new Separator());
 		drillDownAdapter.addNavigationActions(manager);
 	}
@@ -154,7 +155,20 @@ public class GlobalView extends ViewPart {
 		action1.setToolTipText("Demande au serveur le nouvel état du processeur");
 
 		action1.setImageDescriptor(Activator.getImageDescriptor("refresh.gif"));
-
+		
+		action2 = new Action(){
+			public void run()
+			{
+				Updater updater = Activator.getDefault().getUpdater();
+				updater.demanderEnvoi();
+				while(!updater.majEnvoyee());
+				System.out.println("Maj envoyée.");
+			}
+		};
+		
+		action2.setText("Envoyer les modifications.");
+		action2.setToolTipText("Envoi au serveur les modifications effectuées localement");
+		action2.setImageDescriptor(Activator.getImageDescriptor("send.gif"));
 		
 		doubleClickAction = new Action() {
 			public void run() {

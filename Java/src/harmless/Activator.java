@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.List;
-import java.util.Scanner;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -20,8 +19,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 
@@ -87,10 +88,19 @@ public class Activator extends AbstractUIPlugin {
 			
 												});
 		myDialog.open();
-		int port = Integer.parseInt(myDialog.getValue());
-//		System.out.println("Veuillez entrer le port d'écoute:");
-//		Scanner sc = new Scanner(System.in);
-//		int port = Integer.parseInt(sc.nextLine());
+		int port = 0;
+		if(myDialog.getReturnCode() == Window.OK)
+			port = Integer.parseInt(myDialog.getValue());
+		else
+		{
+			try {
+				getBundle().stop(Bundle.STOP_TRANSIENT);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		Socket socket = new Socket("localhost", port);
 		chargeur = new Chargeur(socket);
 		

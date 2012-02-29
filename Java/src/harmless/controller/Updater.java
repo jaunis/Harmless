@@ -99,7 +99,17 @@ public class Updater extends Thread {
 		
 		synchronized(listeMaj)
 		{
-			//TODO envoyer les MAJ
+			out.println("receive");
+			for(Register reg: listeMaj)
+			{
+				String message = reg.getId() + " " + reg.getValeurHexa();
+				System.out.println(message);
+				out.println(message);
+			}
+			out.println("end");
+			//normalement, les println effectuent un flush à chaque fois, mais
+			//2 précautions valent mieux qu'une
+			out.flush();
 			listeMaj.removeAll(listeMaj);
 			majEnvoyee = true;
 		}
