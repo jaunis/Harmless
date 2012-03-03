@@ -22,7 +22,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 
@@ -39,7 +38,6 @@ public class Activator extends AbstractUIPlugin {
 	private static Activator plugin;
 	private Chargeur chargeur;
 	private Updater updater;
-
 	
 	private List<Peripheral> listePeripheriques;
 
@@ -63,9 +61,8 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		super.start(context);
+		
 		plugin = this;
-		//TODO demander le port de façon plus "propre"
 		InputDialog myDialog = new InputDialog(Display.getCurrent().getActiveShell(), 
 												"Port", 
 												"Veuillez entrer le port d'écoute:",
@@ -90,25 +87,18 @@ public class Activator extends AbstractUIPlugin {
 		myDialog.open();
 		int port = 0;
 		if(myDialog.getReturnCode() == Window.OK)
-			port = Integer.parseInt(myDialog.getValue());
-		else
 		{
-			try {
-				getBundle().stop(Bundle.STOP_TRANSIENT);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		Socket socket = new Socket("localhost", port);
-		chargeur = new Chargeur(socket);
-		
-		listePeripheriques = chargeur.initialiserPeripheriques();
-		afficherEtat();
-		Thread.sleep(10);
-		updater = new Updater("localhost", port);
-		updater.start();		
+			port = Integer.parseInt(myDialog.getValue());
+			Socket socket = new Socket("localhost", port);
+			chargeur = new Chargeur(socket);
+			
+			listePeripheriques = chargeur.initialiserPeripheriques();
+			afficherEtat();
+			Thread.sleep(10);
+			updater = new Updater("localhost", port);
+			updater.start();	
+		}	
+		super.start(context);
 	}
 	
 	public Updater getUpdater() {

@@ -10,10 +10,7 @@ import harmless.views.UpdateSlicesView;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -26,14 +23,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 
 
 
@@ -75,6 +72,8 @@ public class GlobalView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
+		
+		
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		
 		for(int i=0; i<=8; i++)
@@ -87,19 +86,22 @@ public class GlobalView extends ViewPart {
 		}
 		viewer.getTree().setHeaderVisible(true);
 		drillDownAdapter = new DrillDownAdapter(viewer);
+		if(Activator.getDefault().getUpdater() != null)
+		{
+			viewer.setContentProvider(new GlobalViewContentProvider(this));
+			viewer.setLabelProvider(new GlobalViewLabelProvider());
+			viewer.setSorter(new NameSorter());
+			viewer.setInput(getViewSite());
+			
+			// Create the help context id for the viewer's control
+			//PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
+			makeActions();
+			//hookContextMenu();
+			hookDoubleClickAction();
+			contributeToActionBars();
+			Activator.getDefault().getUpdater().signalerOuverture();
+		}
 		
-		viewer.setContentProvider(new GlobalViewContentProvider(this));
-		viewer.setLabelProvider(new GlobalViewLabelProvider());
-		viewer.setSorter(new NameSorter());
-		viewer.setInput(getViewSite());
-		
-		// Create the help context id for the viewer's control
-		//PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
-		makeActions();
-		//hookContextMenu();
-		hookDoubleClickAction();
-		contributeToActionBars();
-		Activator.getDefault().getUpdater().signalerOuverture();
 	}
 
 //	private void hookContextMenu() {
@@ -227,6 +229,23 @@ public class GlobalView extends ViewPart {
 
 	public void dispose()
 	{
-		Activator.getDefault().getUpdater().signalerFermeture();
+		Activator activator = Activator.getDefault();
+		if(activator.getUpdater() != null)
+		{
+			activator.getUpdater().signalerFermeture();
+			
+		}
+		else
+		{
+			try {
+				activator.getBundle().stop(Bundle.STOP_TRANSIENT);
+			} catch (BundleException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+			
+		super.dispose();
+		
 	}
 }
