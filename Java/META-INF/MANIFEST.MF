@@ -10,3 +10,18 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jdom-1.1.2.jar,
  .
+Export-Package: harmless,
+ harmless.controller,
+ harmless.exceptions,
+ harmless.model,
+ harmless.views,
+ harmless.views.communs,
+ harmless.views.globalview,
+ harmless.views.slicesview,
+ org.jdom,
+ org.jdom.adapters,
+ org.jdom.filter,
+ org.jdom.input,
+ org.jdom.output,
+ org.jdom.transform,
+ org.jdom.xpath
