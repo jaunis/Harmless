@@ -99,7 +99,6 @@ public class Updater extends Thread {
 		synchronized(listeMaj)
 		{
 			out.println("receive");
-			out.flush();
 			for(Register reg: listeMaj)
 			{
 				String message = reg.getId() + " " + reg.getValeurHexa();
@@ -149,6 +148,13 @@ public class Updater extends Thread {
 	{
 		try
 		{
+			if(out != null)
+				out.close();
+			if(ips != null)
+				ips.close();
+			if(socket != null)
+				socket.close();
+			
 			socket = new Socket(serveur, port);
 			out = new PrintWriter(socket.getOutputStream(), true);
 			ips = socket.getInputStream();

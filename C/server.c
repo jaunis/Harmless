@@ -184,7 +184,7 @@ void reception_fichier_par_socket(char* nomFichier)
     char* ligne = strtok(NULL, "\n");
     while(!comp(ligne, "end"))
     {
-      fprintf(fichier, "%s", ligne);
+      fprintf(fichier, "%s\n", ligne);
       ligne = strtok(NULL, "\n");
     }
     fclose(fichier);
