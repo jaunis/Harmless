@@ -12,16 +12,25 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -41,6 +50,65 @@ public class Activator extends AbstractUIPlugin {
 	private Updater updater;
 	
 	private List<Peripheral> listePeripheriques;
+	
+	class DoubleInputDialog extends InputDialog
+	{
+		private String message2;
+		private Text text2;
+		private String value2;
+		
+		DoubleInputDialog(Shell parentShell, String dialogTitle,
+	            String dialogMessage1, String initialValue1, IInputValidator validator1,
+	            String dialogMessage2, String initialValue2) 
+	    {
+		
+			super(parentShell, dialogTitle, dialogMessage1, initialValue1, validator1);
+			
+			this.message2 = dialogMessage2;
+			if (initialValue2 == null) {
+				value2 = "";//$NON-NLS-1$
+			} else {
+				value2 = initialValue2;
+			}
+		}
+		
+		protected Control createDialogArea(Composite parent) {
+			Composite composite = (Composite) super.createDialogArea(parent);
+			if (message2 != null) {
+	            Label label = new Label(composite, SWT.WRAP);
+	            label.setText(message2);
+	            GridData data = new GridData(GridData.GRAB_HORIZONTAL
+	                    | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
+	                    | GridData.VERTICAL_ALIGN_CENTER);
+	            data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+	            label.setLayoutData(data);
+	            label.setFont(parent.getFont());
+	        }
+	        text2 = new Text(composite, getInputTextStyle());
+	        text2.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+	                | GridData.HORIZONTAL_ALIGN_FILL));
+	        text2.setText(value2);
+			return composite;
+		}
+		
+		public String getValue1()
+		{
+			return super.getValue();
+		}
+		
+		public String getValue2()
+		{
+			return value2;
+		}
+		protected void buttonPressed(int buttonId) {
+	        if (buttonId == IDialogConstants.OK_ID) {
+	            value2 = text2.getText();
+	        } else {
+	            value2 = null;
+	        }
+	        super.buttonPressed(buttonId);
+	    }
+	}
 
 	
 	public Chargeur getChargeur() {
@@ -65,13 +133,17 @@ public class Activator extends AbstractUIPlugin {
 		
 		plugin = this;
 		boolean cont = true;
-		String dialogMessage = "Veuillez entrer le port d'écoute:";
+		String defaultMessage1 = "Veuillez entrer le port d'écoute:";
+		String defaultMessage2 = "Veuillez entrer le nom de l'hôte:";
+		String dialogMessage1 = defaultMessage1;
+		String dialogMessage2 = defaultMessage2;
 		int defaultPort = 3239;
+		String defaultHost = "localhost";
 		while(cont)
 		{
-			InputDialog myDialog = new InputDialog(Display.getCurrent().getActiveShell(), 
-												"Port", 
-												dialogMessage,
+			DoubleInputDialog myDialog = new DoubleInputDialog(Display.getCurrent().getActiveShell(), 
+												"Informations de connexion", 
+												dialogMessage1,
 												Integer.toString(defaultPort),
 												new IInputValidator(){
 
@@ -89,24 +161,41 @@ public class Activator extends AbstractUIPlugin {
 														return null;
 													}
 			
-												});
+												}, 
+												dialogMessage2, 
+												defaultHost);
 		
 			myDialog.open();
 			int port = 0;
+			String host = "";
 			if(myDialog.getReturnCode() == Window.OK)
 			{
-				port = Integer.parseInt(myDialog.getValue());
+				port = Integer.parseInt(myDialog.getValue1());
+				host = myDialog.getValue2();
 				Socket socket = null;
 				boolean echec = false;
 				try {
-					socket = new Socket("localhost", port);
+					socket = new Socket(host, port);
+					System.out.println("socket créée.");
+				}
+				catch(UnknownHostException e)
+				{
+					System.out.println("bloc catch host.");
+					dialogMessage2 = "Hôte inconnu. Vérifiez que le nom entré est correct.";
+					dialogMessage1 = defaultMessage1;
+					defaultHost = host;
+					defaultPort = port;
+					echec = true;
 				}
 				catch(IOException e)
 				{
-					dialogMessage = "Impossible d'ouvrir une socket sur le port donné. " + 
+					System.out.println("bloc catch port");
+					dialogMessage1 = "Impossible d'ouvrir une socket sur le port donné. " + 
 								"Vérifiez que le serveur est lancé, et que vous avez entré " + 
 								"le bon port, puis réessayez.";
+					dialogMessage2 = defaultMessage2;
 					defaultPort = port;
+					defaultHost = host;
 					echec = true;
 				}
 				
