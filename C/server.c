@@ -9,7 +9,7 @@
 //used for internet domain address
 #include <netinet/in.h>
 
-#define TAILLE_MAXI 256
+#define TAILLE_MAXI 1024
 
 int comp(char*, char*);
 int init_socket_server(int);
