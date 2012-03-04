@@ -43,6 +43,18 @@ public class Updater extends Thread {
 		majRecue = false;
 	}
 	
+	public Updater(Socket socket) throws IOException {
+		this.socket = socket;
+		nbVuesAppelantes = 0;
+		listeMaj = new HashSet<Register>();
+		stop = false;
+		recevoir = false;
+		envoyer = false;
+		majRecue = false;
+		out = new PrintWriter(socket.getOutputStream(), true);
+		ips = socket.getInputStream();
+	}
+
 	public synchronized void run()
 	{
 		while(!stop)
@@ -69,7 +81,10 @@ public class Updater extends Thread {
 				SAXBuilder sxb = new SAXBuilder();
 				try {
 					out.println("send");
-					document = sxb.build(ips);
+					//TODO récupération "propre"
+					InputStream newIps = Chargeur.changeInputStream(ips);
+					document = sxb.build(newIps);
+					newIps.close();
 					Element racine = document.getRootElement();
 					List<Element> registresXml = racine.getChild("update").getChildren("register");
 					for(Element e: registresXml)
@@ -86,7 +101,7 @@ public class Updater extends Thread {
 					e.printStackTrace();
 				}
 				majRecue = true;
-				initIO();				
+//				initIO();				
 			}
 
 		}
@@ -98,19 +113,16 @@ public class Updater extends Thread {
 		
 		synchronized(listeMaj)
 		{
-			out.println("receive");
+			out.print("receive\n");
 			for(Register reg: listeMaj)
 			{
 				String message = reg.getId() + " " + reg.getValeurHexa();
 				System.out.println(message);
-				out.println(message);
+				out.print(message + "\n");
 			}
-			out.println("end");
-			//normalement, les println effectuent un flush à chaque fois, mais
-			//2 précautions valent mieux qu'une
-			out.flush();
+			out.println("end"); 
 			listeMaj.removeAll(listeMaj);
-			initIO();
+			//initIO();
 		}
 		
 	}

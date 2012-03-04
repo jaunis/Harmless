@@ -176,11 +176,9 @@ public class Activator extends AbstractUIPlugin {
 				boolean echec = false;
 				try {
 					socket = new Socket(host, port);
-					System.out.println("socket créée.");
 				}
 				catch(UnknownHostException e)
 				{
-					System.out.println("bloc catch host.");
 					dialogMessage2 = "Hôte inconnu. Vérifiez que le nom entré est correct.";
 					dialogMessage1 = defaultMessage1;
 					defaultHost = host;
@@ -189,7 +187,6 @@ public class Activator extends AbstractUIPlugin {
 				}
 				catch(IOException e)
 				{
-					System.out.println("bloc catch port");
 					dialogMessage1 = "Impossible d'ouvrir une socket sur le port donné. " + 
 								"Vérifiez que le serveur est lancé, et que vous avez entré " + 
 								"le bon port, puis réessayez.";
@@ -205,7 +202,8 @@ public class Activator extends AbstractUIPlugin {
 					listePeripheriques = chargeur.initialiserPeripheriques();
 					afficherEtat();
 					Thread.sleep(10);
-					updater = new Updater("localhost", port);
+					//updater = new Updater(host, port);
+					updater = new Updater(socket);
 					updater.start();	
 					cont = false;
 				}

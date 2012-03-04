@@ -7,9 +7,12 @@ import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -50,18 +53,13 @@ public class Chargeur {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			//System.exit(1);
 		}
 		
 		out.println("send");
+		InputStream newIps = changeInputStream(ips);
 		SAXBuilder sxb = new SAXBuilder();
-		List<Peripheral> retour = traiterXML(sxb.build(ips));
-		
-		out.flush();
-		out.close();
-		ips.close();
-		socket.close();
-		
+		List<Peripheral> retour = traiterXML(sxb.build(newIps));
+		newIps.close();
 		return retour;
 	}
 	
@@ -187,5 +185,19 @@ public class Chargeur {
 				Integer.parseInt(rangeXml.getAttributeValue("from")),
 				Integer.parseInt(rangeXml.getAttributeValue("to")),
 				slice);
+	}
+	
+	public static InputStream changeInputStream(InputStream ips) throws IOException
+	{
+		BufferedInputStream bufIps= new BufferedInputStream(ips);
+		StringWriter writer = new StringWriter();
+		int valeur = bufIps.read();
+		while(valeur != (new String("\0")).toCharArray()[0])
+		{
+			writer.write(valeur);
+			valeur = bufIps.read();
+		}
+		System.out.println(writer.toString());
+		return new ByteArrayInputStream(writer.toString().getBytes());
 	}
 }

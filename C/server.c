@@ -58,16 +58,16 @@ int main(int argc, char *argv[])
   printf("Here is the message: %s\n",buffer);
 
   envoi_fichier_par_socket("example.xml", newsockfd);
-  close(newsockfd);
+  //close(newsockfd);
   //boucle sur l'envoi de testMAJ.xml
   int cont = 1;
   while(cont)
   {
-     newsockfd = accept(sockfd, 
+     /*newsockfd = accept(sockfd, 
 		    (struct sockaddr *) &cli_addr, 
 		    &clilen);
     if (newsockfd < 0) 
-	error("ERROR on accept");
+	error("ERROR on accept");*/
 
 	  
     bzero(buffer,TAILLE_MAXI);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     else if(comp(ligne1, "receive"))
       reception_fichier_par_socket("testEnvoiModif.txt");
     //c'est assez moche de fermer et ouvrir à chaque fois, voir si on peut faire autrement
-    close(newsockfd);
+    //close(newsockfd);
   }
   close(sockfd);
   return 0; 
@@ -160,8 +160,9 @@ void envoi_fichier_par_socket(char* nomFichier, int socket_client)
 		printf("%s", buffer);
 		bzero(buffer,TAILLE_MAXI);
 	  }
-	    
 	  fclose (fichier);
+	  n = write(socket_client, "\0", 1);
+		if (n<0) error("ERROR writing to socket");
     }
     else
     {
