@@ -8,6 +8,7 @@ import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
@@ -63,10 +64,15 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		
 		plugin = this;
-		InputDialog myDialog = new InputDialog(Display.getCurrent().getActiveShell(), 
+		boolean cont = true;
+		String dialogMessage = "Veuillez entrer le port d'écoute:";
+		int defaultPort = 3239;
+		while(cont)
+		{
+			InputDialog myDialog = new InputDialog(Display.getCurrent().getActiveShell(), 
 												"Port", 
-												"Veuillez entrer le port d'écoute:",
-												"3239",
+												dialogMessage,
+												Integer.toString(defaultPort),
 												new IInputValidator(){
 
 													@Override
@@ -84,20 +90,39 @@ public class Activator extends AbstractUIPlugin {
 													}
 			
 												});
-		myDialog.open();
-		int port = 0;
-		if(myDialog.getReturnCode() == Window.OK)
-		{
-			port = Integer.parseInt(myDialog.getValue());
-			Socket socket = new Socket("localhost", port);
-			chargeur = new Chargeur(socket);
-			
-			listePeripheriques = chargeur.initialiserPeripheriques();
-			afficherEtat();
-			Thread.sleep(10);
-			updater = new Updater("localhost", port);
-			updater.start();	
-		}	
+		
+			myDialog.open();
+			int port = 0;
+			if(myDialog.getReturnCode() == Window.OK)
+			{
+				port = Integer.parseInt(myDialog.getValue());
+				Socket socket = null;
+				boolean echec = false;
+				try {
+					socket = new Socket("localhost", port);
+				}
+				catch(IOException e)
+				{
+					dialogMessage = "Impossible d'ouvrir une socket sur le port donné. " + 
+								"Vérifiez que le serveur est lancé, et que vous avez entré " + 
+								"le bon port, puis réessayez.";
+					defaultPort = port;
+					echec = true;
+				}
+				
+				if(!echec)
+				{
+					chargeur = new Chargeur(socket);
+					listePeripheriques = chargeur.initialiserPeripheriques();
+					afficherEtat();
+					Thread.sleep(10);
+					updater = new Updater("localhost", port);
+					updater.start();	
+					cont = false;
+				}
+			}	
+			else cont = false;
+		}
 		super.start(context);
 	}
 	
