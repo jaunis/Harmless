@@ -161,6 +161,7 @@ void envoi_fichier_par_socket(char* nomFichier, int socket_client)
 		bzero(buffer,TAILLE_MAXI);
 	  }
 	  fclose (fichier);
+	  //!!"\0" est indispensable: sans cela, le client ne détectera pas la fin du flux et restera en attente sur le  dernier caractère
 	  n = write(socket_client, "\0", 1);
 		if (n<0) error("ERROR writing to socket");
     }

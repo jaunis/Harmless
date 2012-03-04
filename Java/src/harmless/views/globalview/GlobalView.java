@@ -240,7 +240,7 @@ public class GlobalView extends ViewPart {
 			try {
 				activator.getBundle().stop(Bundle.STOP_TRANSIENT);
 			} catch (BundleException e) {
-				// TODO Auto-generated catch block
+				System.err.println("Erreur à la fermeture du plugin.");
 				e.printStackTrace();
 			}
 		}

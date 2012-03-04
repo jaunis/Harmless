@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,29 +21,14 @@ import org.osgi.framework.Bundle;
 
 public class Updater extends Thread {
 	
-	private int port, nbVuesAppelantes;
-	private String serveur;
+	private int nbVuesAppelantes;
 	private Set<Register> listeMaj;
 	private boolean stop, recevoir, envoyer, majRecue;
-	private Socket socket;
 	private PrintWriter out;
 	private InputStream ips;
-		
-	public Updater(String serveur, int port) {
-		
-		this.serveur = serveur;
-		this.port = port;
-		nbVuesAppelantes = 0;
-		initIO();
-		listeMaj = new HashSet<Register>();
-		stop = false;
-		recevoir = false;
-		envoyer = false;
-		majRecue = false;
-	}
 	
 	public Updater(Socket socket) throws IOException {
-		this.socket = socket;
+		
 		nbVuesAppelantes = 0;
 		listeMaj = new HashSet<Register>();
 		stop = false;
@@ -81,7 +65,6 @@ public class Updater extends Thread {
 				SAXBuilder sxb = new SAXBuilder();
 				try {
 					out.println("send");
-					//TODO récupération "propre"
 					InputStream newIps = Chargeur.changeInputStream(ips);
 					document = sxb.build(newIps);
 					newIps.close();
@@ -145,7 +128,7 @@ public class Updater extends Thread {
 		try {
 			Activator.getDefault().getBundle().stop(Bundle.STOP_TRANSIENT);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.err.println("Erreur à la fermeture du plugin.");
 			e.printStackTrace();
 		}
 		stop = true;
@@ -156,27 +139,6 @@ public class Updater extends Thread {
 		listeMaj.add(r);
 	}
 	
-	private synchronized void initIO()
-	{
-		try
-		{
-			if(out != null)
-				out.close();
-			if(ips != null)
-				ips.close();
-			if(socket != null)
-				socket.close();
-			
-			socket = new Socket(serveur, port);
-			out = new PrintWriter(socket.getOutputStream(), true);
-			ips = socket.getInputStream();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public boolean majRecue() 
 	{
 		if(majRecue)

@@ -187,10 +187,23 @@ public class Chargeur {
 				slice);
 	}
 	
+	/**
+	 * Transforme un flux en un autre, en faisant transiter le flux par une String. 
+	 * La fin du flux est repérée par le caractère "\0"<br>
+	 * Intérêt: la fonction SaxBuilder.build(InputStream) attend que le flux soit terminé, 
+	 * c'est-à-dire, dans le cas présent, que la socket client soit fermée par le serveur.
+	 * Ce qui oblige à réinitialiser la socket après chaque transmission.
+	 * Cette méthode permet de contourner le problème.
+	 * @param ips le flux à transformer
+	 * @return le nouveau flux
+	 * @throws IOException
+	 */
 	public static InputStream changeInputStream(InputStream ips) throws IOException
 	{
 		BufferedInputStream bufIps= new BufferedInputStream(ips);
 		StringWriter writer = new StringWriter();
+		//récupérer un caractère à la fois n'est sans doute pas le plus efficace,
+		//mais c'est le plus simple pour effectuer le test
 		int valeur = bufIps.read();
 		while(valeur != (new String("\0")).toCharArray()[0])
 		{
