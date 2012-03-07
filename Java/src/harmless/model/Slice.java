@@ -17,10 +17,10 @@ public class Slice extends BitManager{
 	private String id;
 	private String description;
 	private boolean readOnly;
-	//utile?
 	private List<Range> listeRanges;
 	private Register registre;
-	private Hashtable<Integer, String> items;
+	//private Hashtable<Integer, String> items;
+	private List<Item> listeItem;
 	
 	public Slice(String id, String description,	Register registre) 
 	{
@@ -29,7 +29,8 @@ public class Slice extends BitManager{
 		this.description = description;
 		this.registre = registre;
 		readOnly = false;
-		items = new Hashtable<Integer, String>();
+		//items = new Hashtable<Integer, String>();
+		listeItem = new ArrayList<Item>();
 		listeRanges = new ArrayList<Range>();
 	}
 	/**
@@ -96,20 +97,45 @@ public class Slice extends BitManager{
 	/**
 	 * @return the valeurs
 	 */
-	public Hashtable<Integer, String> getItems() {
-		return items;
+	//public Hashtable<Integer, String> getItems() {
+		//return items;
+	//}
+	
+	public Item getItem(String description, int valeur){
+		//on parcourt la liste d'item 
+		int taille = listeItem.size();
+		int repere = 0;
+		for(int k =0; k< taille; k++){
+		
+			if(description == listeItem.get(k).getDescription() && valeur == listeItem.get(k).getValeur()){
+				repere = k;
+			}
+		}
+		return listeItem.get(repere);
 	}
 	/**
 	 * @param valeurs the valeurs to set
 	 */
-	public void setItems(Hashtable<Integer, String> items) {
-		this.items = items;
+	//public void setItems(Hashtable<Integer, String> items) {
+		//this.items = items;
+	//}
+	
+	public void setItem(ArrayList<Item> item){
+		this.listeItem = item;
 	}
 	
-	public void addItem(Integer valeur, String sens)
-	{
-		items.put(valeur, sens);
+	public void addItem(Item item){
+		listeItem.add(item);		
 	}
+	
+	public List<Item> getListeItem(){
+		return this.listeItem;
+	}
+	
+	//public void addItem(Integer valeur, String sens)
+	//{
+		//items.put(valeur, sens);
+	//}
 	
 	public void addRange(Range r)
 	{

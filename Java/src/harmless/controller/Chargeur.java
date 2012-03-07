@@ -6,6 +6,7 @@ import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
+import harmless.model.Item;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,16 +167,23 @@ public class Chargeur {
 		List<Element> items = sliceXml.getChildren("item");
 		if(!items.isEmpty())
 		{
-			Hashtable<Integer, String> itemsTable = new Hashtable<Integer, String>();
+			//Hashtable<Integer, String> itemsTable = new Hashtable<Integer, String>();
+			ArrayList<Item> itemListe = new ArrayList<Item>();
 			Iterator<Element> itItems = items.iterator();
 			while(itItems.hasNext())
 			{
 				Element item = itItems.next();
 				int valeur = Integer.parseInt(item.getAttributeValue("val"));
 				String descrItem = item.getAttributeValue("description");
-				itemsTable.put(valeur, descrItem);
+				//itemsTable.put(valeur, descrItem);
+				
+				Item bla = new Item(valeur, descrItem);
+				itemListe.add(bla);
+				
+				
 			}
-			objSlice.setItems(itemsTable);
+			//objSlice.setItems(itemsTable);
+			objSlice.setItem(itemListe);
 		}
 		
 		return objSlice;

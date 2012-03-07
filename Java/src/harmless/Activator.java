@@ -7,6 +7,7 @@ import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
+import harmless.model.Item;
 
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -109,9 +110,14 @@ public class Activator extends AbstractUIPlugin {
 					{
 						System.out.println("   from " + range.getFrom() + " to " + range.getTo());
 					}
-					System.out.println("   nom de l'item: " + s.getItems().get(s.getValeur()));
-					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
+					//System.out.println("   nom de l'item: " + s.getItem().get(s.getValeur()));
 					
+					System.out.println("  nb de bits du slice: " + s.getListeBits().size());
+					//dans un slice il y a des Items qui ont une valeur et une description:
+						for(Item item: s.getListeItem())
+						{
+							System.out.println(" item : " + item.getDescription() + " de valeur: " + item.getValeur());
+						}
 				}
 			}
 		}

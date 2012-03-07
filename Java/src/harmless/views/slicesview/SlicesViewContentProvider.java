@@ -16,8 +16,10 @@ import org.eclipse.jface.viewers.Viewer;
  * it and always show the same content 
  * (like Task List, for example).
  */
-class SlicesViewContentProvider implements IStructuredContentProvider, 
-   										ITreeContentProvider 
+
+
+class SlicesViewContentProvider implements IStructuredContentProvider
+//,ITreeContentProvider
    {
 		/**
 		 * 
@@ -34,6 +36,21 @@ class SlicesViewContentProvider implements IStructuredContentProvider,
 		}
 		public void dispose() {
 		}
+		
+		
+		public Object[] getElements(Object parent) {
+			if(parent.equals(this.slicesView.getViewSite()))
+			{
+				if(this.slicesView == null)
+					return new Object[0];
+				else
+					return new Object[]{this.registreRacine};	
+			}
+			return null;			
+			
+		}
+		
+		/*
 		public Object[] getElements(Object parent) {
 			if(parent.equals(this.slicesView.getViewSite()))
 			{
@@ -43,7 +60,10 @@ class SlicesViewContentProvider implements IStructuredContentProvider,
 					return new Object[]{this.registreRacine};
 			}
 			return getChildren(parent);
-		}
+		}*/
+		
+		
+		/*
 		public Object getParent(Object child) {
 			if(child instanceof Register)
 				return null;
@@ -63,6 +83,6 @@ class SlicesViewContentProvider implements IStructuredContentProvider,
 			else if(parent.equals(this.slicesView.getViewSite()))
 					return true;
 			return false;
-		}
+		}*/
 		
 	}
