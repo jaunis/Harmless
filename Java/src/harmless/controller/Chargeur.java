@@ -8,9 +8,12 @@ import harmless.model.Register;
 import harmless.model.Slice;
 import harmless.model.Item;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -51,18 +54,13 @@ public class Chargeur {
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			//System.exit(1);
 		}
 		
 		out.println("send");
+		InputStream newIps = changeInputStream(ips);
 		SAXBuilder sxb = new SAXBuilder();
-		List<Peripheral> retour = traiterXML(sxb.build(ips));
-		
-		out.flush();
-		out.close();
-		ips.close();
-		socket.close();
-		
+		List<Peripheral> retour = traiterXML(sxb.build(newIps));
+		newIps.close();
 		return retour;
 	}
 	
@@ -195,5 +193,32 @@ public class Chargeur {
 				Integer.parseInt(rangeXml.getAttributeValue("from")),
 				Integer.parseInt(rangeXml.getAttributeValue("to")),
 				slice);
+	}
+	
+	/**
+	 * Transforme un flux en un autre, en faisant transiter le flux par une String. 
+	 * La fin du flux est repérée par le caractère "\0"<br>
+	 * Intérêt: la fonction SaxBuilder.build(InputStream) attend que le flux soit terminé, 
+	 * c'est-à-dire, dans le cas présent, que la socket client soit fermée par le serveur.
+	 * Ce qui oblige à réinitialiser la socket après chaque transmission.
+	 * Cette méthode permet de contourner le problème.
+	 * @param ips le flux à transformer
+	 * @return le nouveau flux
+	 * @throws IOException
+	 */
+	public static InputStream changeInputStream(InputStream ips) throws IOException
+	{
+		BufferedInputStream bufIps= new BufferedInputStream(ips);
+		StringWriter writer = new StringWriter();
+		//récupérer un caractère à la fois n'est sans doute pas le plus efficace,
+		//mais c'est le plus simple pour effectuer le test
+		int valeur = bufIps.read();
+		while(valeur != (new String("\0")).toCharArray()[0])
+		{
+			writer.write(valeur);
+			valeur = bufIps.read();
+		}
+		System.out.println(writer.toString());
+		return new ByteArrayInputStream(writer.toString().getBytes());
 	}
 }

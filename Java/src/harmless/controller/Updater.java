@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,31 +17,28 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.osgi.framework.Bundle;
 
 public class Updater extends Thread {
 	
-	private int port, nbVuesAppelantes;
-	private String serveur;
+	private int nbVuesAppelantes;
 	private Set<Register> listeMaj;
-	private boolean stop, recevoir, envoyer, majRecue, majEnvoyee;
-	private Socket socket;
+	private boolean stop, recevoir, envoyer, majRecue;
 	private PrintWriter out;
 	private InputStream ips;
+	
+	public Updater(Socket socket) throws IOException {
 		
-	public Updater(String serveur, int port) {
-		
-		this.serveur = serveur;
-		this.port = port;
 		nbVuesAppelantes = 0;
-		initIO();
 		listeMaj = new HashSet<Register>();
 		stop = false;
 		recevoir = false;
 		envoyer = false;
 		majRecue = false;
-		majEnvoyee = false;
+		out = new PrintWriter(socket.getOutputStream(), true);
+		ips = socket.getInputStream();
 	}
-	
+
 	public synchronized void run()
 	{
 		while(!stop)
@@ -69,7 +65,9 @@ public class Updater extends Thread {
 				SAXBuilder sxb = new SAXBuilder();
 				try {
 					out.println("send");
-					document = sxb.build(ips);
+					InputStream newIps = Chargeur.changeInputStream(ips);
+					document = sxb.build(newIps);
+					newIps.close();
 					Element racine = document.getRootElement();
 					List<Element> registresXml = racine.getChild("update").getChildren("register");
 					for(Element e: registresXml)
@@ -86,7 +84,7 @@ public class Updater extends Thread {
 					e.printStackTrace();
 				}
 				majRecue = true;
-				initIO();				
+//				initIO();				
 			}
 
 		}
@@ -98,9 +96,16 @@ public class Updater extends Thread {
 		
 		synchronized(listeMaj)
 		{
-			//TODO envoyer les MAJ
+			out.print("receive\n");
+			for(Register reg: listeMaj)
+			{
+				String message = reg.getId() + " " + reg.getValeurHexa();
+				System.out.println(message);
+				out.print(message + "\n");
+			}
+			out.println("end"); 
 			listeMaj.removeAll(listeMaj);
-			majEnvoyee = true;
+			//initIO();
 		}
 		
 	}
@@ -120,6 +125,12 @@ public class Updater extends Thread {
 	public void arret()
 	{
 		out.println("stop");
+		try {
+			Activator.getDefault().getBundle().stop(Bundle.STOP_TRANSIENT);
+		} catch (Exception e) {
+			System.err.println("Erreur à la fermeture du plugin.");
+			e.printStackTrace();
+		}
 		stop = true;
 	}
 	
@@ -128,20 +139,6 @@ public class Updater extends Thread {
 		listeMaj.add(r);
 	}
 	
-	private synchronized void initIO()
-	{
-		try
-		{
-			socket = new Socket(serveur, port);
-			out = new PrintWriter(socket.getOutputStream(), true);
-			ips = socket.getInputStream();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public boolean majRecue() 
 	{
 		if(majRecue)
@@ -155,13 +152,7 @@ public class Updater extends Thread {
 	
 	public boolean majEnvoyee()
 	{
-		if(majEnvoyee)
-		{
-			majEnvoyee = false;
-			return true;
-		}
-		else
-			return false;
+		return listeMaj.isEmpty();
 	}
 	
 	/**

@@ -139,7 +139,6 @@ public class Slice extends BitManager{
 	
 	public void addRange(Range r)
 	{
-		//TODO méthode à tester car un peu complexe
 		List<Bit> aInserer = null;
 		try
 		{
