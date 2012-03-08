@@ -2,6 +2,7 @@ package harmless.views.slicesview;
 
 import harmless.Activator;
 import harmless.controller.Updater;
+import harmless.exceptions.RegistreNonTrouveException;
 import harmless.views.communs.NameSorter;
 
 import org.eclipse.jface.action.Action;
@@ -11,7 +12,6 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -20,20 +20,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.jface.viewers.EditingSupport;
 
 
 
@@ -45,7 +39,7 @@ public class SlicesView extends ViewPart {
 	public static final String ID = "harmless.views.SlicesView";
 
 	private TableViewer viewer;
-	private DrillDownAdapter drillDownAdapter;
+	//private DrillDownAdapter drillDownAdapter;
 	private Action action1;
 	private Action doubleClickAction;
 
@@ -71,32 +65,32 @@ public class SlicesView extends ViewPart {
 		exampleTable.setHeaderVisible(true);
 		exampleTable.setLayout(tableLayout);
 		 
-		TableViewer viewer = new TableViewer(exampleTable);
+		viewer = new TableViewer(exampleTable);
 		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		 
 		TableViewerColumn labelColumn = new TableViewerColumn(viewer, SWT.NONE);
 		labelColumn.getColumn().setText("Label");
 		
-		/*TableViewerColumn valueColumn = new TableViewerColumn(viewer, SWT.NONE);
+		TableViewerColumn valueColumn = new TableViewerColumn(viewer, SWT.NONE);
 		valueColumn.getColumn().setText("Value");
 		EditionSupport editionSupport = new EditionSupport(valueColumn.getViewer(), this);
 		valueColumn.setEditingSupport(editionSupport);
 		
 		TableViewerColumn checkColumn = new TableViewerColumn(viewer, SWT.NONE);
-		labelColumn.getColumn().setText(" ");*/
-		
-				 
-		
-		//drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new SlicesViewContentProvider(this, null));
+		labelColumn.getColumn().setText(" ");
+
+		try {
+			viewer.setContentProvider(new SlicesViewContentProvider(this, Activator.getDefault().getRegistre("UCSR0C")));
+		} catch (RegistreNonTrouveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		viewer.setLabelProvider(new SlicesViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
         
 
-		// Create the help context id for the viewer's control
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
 		makeActions();
 		hookContextMenu();
 		hookDoubleClickAction();
@@ -131,7 +125,7 @@ public class SlicesView extends ViewPart {
 	private void fillContextMenu(IMenuManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
+		//drillDownAdapter.addNavigationActions(manager);
 		// Other plug-ins can contribute there actions here
 		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
@@ -139,7 +133,7 @@ public class SlicesView extends ViewPart {
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
 		manager.add(new Separator());
-		drillDownAdapter.addNavigationActions(manager);
+		//drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
@@ -183,5 +177,10 @@ public class SlicesView extends ViewPart {
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+	
+	public TableViewer getViewer()
+	{
+		return viewer;
 	}
 }

@@ -5,7 +5,6 @@ package harmless.model;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -96,22 +95,22 @@ public class Slice extends BitManager{
 	}
 	/**
 	 * @return the valeurs
+	 * @throws Exception 
 	 */
 	//public Hashtable<Integer, String> getItems() {
 		//return items;
 	//}
 	
-	public Item getItem(String description, int valeur){
+	public Item getItem(int valeur) throws Exception{
 		//on parcourt la liste d'item 
-		int taille = listeItem.size();
-		int repere = 0;
-		for(int k =0; k< taille; k++){
-		
-			if(description == listeItem.get(k).getDescription() && valeur == listeItem.get(k).getValeur()){
-				repere = k;
-			}
+		if(listeItem.size() == 0)
+			throw new Exception("liste vide");
+		for(Item i: listeItem)
+		{
+			if(i.getValeur() == valeur)
+				return i;
 		}
-		return listeItem.get(repere);
+		throw new Exception("valeur non trouvée");
 	}
 	/**
 	 * @param valeurs the valeurs to set

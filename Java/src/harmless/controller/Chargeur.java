@@ -2,11 +2,11 @@ package harmless.controller;
 
 import harmless.exceptions.InvalidDescriptionException;
 import harmless.model.Bit;
+import harmless.model.Item;
 import harmless.model.Peripheral;
 import harmless.model.Range;
 import harmless.model.Register;
 import harmless.model.Slice;
-import harmless.model.Item;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 

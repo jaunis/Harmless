@@ -45,7 +45,6 @@ public class GlobalView extends ViewPart {
 	private TreeViewer viewer;
 
 	private DrillDownAdapter drillDownAdapter;
-	//private List<TreeViewerColumn> listeColonnes = new ArrayList<TreeViewerColumn>();
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
@@ -72,16 +71,20 @@ public class GlobalView extends ViewPart {
 	 * to create the viewer and initialize it.
 	 */
 	public void createPartControl(Composite parent) {
-		
-		
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		
 		for(int i=0; i<=8; i++)
 		{
 			TreeViewerColumn tvc = new TreeViewerColumn(viewer, SWT.NONE);
 			TreeColumn localColumn = tvc.getColumn();
+			if(i==1)
+			{
+				GlobalViewEditionSupport editonSupport = new GlobalViewEditionSupport(tvc.getViewer());
+				tvc.setEditingSupport(editonSupport);
+			}
 			localColumn.pack();
-			localColumn.setWidth(100);
+			if(i==0) localColumn.setWidth(150);
+			else localColumn.setWidth(50);
 			localColumn.setAlignment(SWT.CENTER);
 		}
 		viewer.getTree().setHeaderVisible(true);
@@ -92,7 +95,6 @@ public class GlobalView extends ViewPart {
 			viewer.setLabelProvider(new GlobalViewLabelProvider());
 			viewer.setSorter(new NameSorter());
 			viewer.setInput(getViewSite());
-			
 			// Create the help context id for the viewer's control
 			//PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
 			makeActions();
@@ -147,10 +149,21 @@ public class GlobalView extends ViewPart {
 
 		action1 = new Action(){
 			public void run() {
-				Updater updater = Activator.getDefault().getUpdater();
-				updater.demanderReception();
-				while(!updater.majRecue());
-				viewer.refresh();
+				boolean cont = true;
+				if(!Activator.getDefault().getUpdater().majEnvoyee())
+				{
+					cont = MessageDialog.openConfirm(viewer.getControl().getShell(), 
+							"Mise à jour", 
+							"Ceci écrasera les modifications non envoyées." + 
+							"Etes-vous sûr de vouloir continuer?");
+				}
+				if(cont)
+				{
+					Updater updater = Activator.getDefault().getUpdater();
+					updater.demanderReception();
+					while(!updater.majRecue());
+					viewer.refresh();
+				}
 			}
 		};
 		action1.setText("Mettre à jour");
