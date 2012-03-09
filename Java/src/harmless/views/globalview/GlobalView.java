@@ -5,7 +5,7 @@ import harmless.Activator;
 import harmless.controller.Updater;
 import harmless.model.Bit;
 import harmless.model.Register;
-import harmless.views.UpdateSlicesView;
+import harmless.views.slicesview.SlicesView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,9 +197,9 @@ public class GlobalView extends ViewPart {
 				{
 					try 
 					{
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(UpdateSlicesView.ID);
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SlicesView.ID);
 					} catch (PartInitException e) {
-						showMessage("Erreur: impossible d'ouvrir la vue " + UpdateSlicesView.ID);
+						showMessage("Erreur: impossible d'ouvrir la vue " + SlicesView.ID);
 						e.printStackTrace();
 					}
 					//TODO dire à la vue quel registre afficher
