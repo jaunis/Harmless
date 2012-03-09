@@ -7,6 +7,7 @@ import harmless.model.Bit;
 import harmless.model.Register;
 import harmless.views.UpdateSlicesView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -43,11 +44,11 @@ public class GlobalView extends ViewPart {
 	public static final String ID = "harmless.views.GlobalView";
 
 	private TreeViewer viewer;
-
 	private DrillDownAdapter drillDownAdapter;
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
+	private List<TreeColumn> listeColonnes;
 
 
 
@@ -72,33 +73,49 @@ public class GlobalView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		
-		for(int i=0; i<=8; i++)
-		{
-			TreeViewerColumn tvc = new TreeViewerColumn(viewer, SWT.NONE);
-			TreeColumn localColumn = tvc.getColumn();
-			if(i==1)
-			{
-				GlobalViewEditionSupport editonSupport = new GlobalViewEditionSupport(tvc.getViewer());
-				tvc.setEditingSupport(editonSupport);
-			}
-			localColumn.pack();
-			if(i==0) localColumn.setWidth(150);
-			else localColumn.setWidth(50);
-			localColumn.setAlignment(SWT.CENTER);
-		}
-		viewer.getTree().setHeaderVisible(true);
-		drillDownAdapter = new DrillDownAdapter(viewer);
+		/*
+		 * si l'updater est nul, c'est qu'on a appuyé sur Cancel au lancement
+		 */
 		if(Activator.getDefault().getUpdater() != null)
 		{
+
+			listeColonnes = new ArrayList<TreeColumn>(9);
+//			parent.addControlListener(new ControlAdapter() {
+//		        @Override
+//		        public void controlResized(final ControlEvent e) {
+//		            System.out.println("RESIZE");
+//		            Rectangle rect = GlobalView.this.parent.getClientArea();
+//		            for(TreeColumn tc: listeColonnes)
+//		            {
+//		            	tc.setWidth((rect.width)/(listeColonnes.size()));
+//		            }
+//		        }
+//		    });
+			
+			for(int i=0; i<=8; i++)
+			{
+				TreeViewerColumn tvc = new TreeViewerColumn(viewer, SWT.NONE);
+				TreeColumn localColumn = tvc.getColumn();
+				if(i==1)
+				{
+					GlobalViewEditionSupport editonSupport = new GlobalViewEditionSupport(tvc.getViewer());
+					tvc.setEditingSupport(editonSupport);
+				}
+				localColumn.pack();
+				if(i==0) localColumn.setWidth(115);
+				else if(i==1) localColumn.setWidth(50);
+				else localColumn.setWidth(25);
+				localColumn.setAlignment(SWT.LEFT);
+				listeColonnes.add(localColumn);
+			}
+			viewer.getTree().setHeaderVisible(true);
+			drillDownAdapter = new DrillDownAdapter(viewer);
+			
 			viewer.setContentProvider(new GlobalViewContentProvider(this));
 			viewer.setLabelProvider(new GlobalViewLabelProvider());
 			viewer.setSorter(new NameSorter());
 			viewer.setInput(getViewSite());
-			// Create the help context id for the viewer's control
-			//PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), "Harmless.viewer");
 			makeActions();
-			//hookContextMenu();
 			hookDoubleClickAction();
 			contributeToActionBars();
 			Activator.getDefault().getUpdater().signalerOuverture();
@@ -106,38 +123,11 @@ public class GlobalView extends ViewPart {
 		
 	}
 
-//	private void hookContextMenu() {
-//		MenuManager menuMgr = new MenuManager("#PopupMenu");
-//		menuMgr.setRemoveAllWhenShown(true);
-//		menuMgr.addMenuListener(new IMenuListener() {
-//			public void menuAboutToShow(IMenuManager manager) {
-//				GlobalView.this.fillContextMenu(manager);
-//			}
-//		});
-//		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-//		viewer.getControl().setMenu(menu);
-//		getSite().registerContextMenu(menuMgr, viewer);
-//	}
-
 	private void contributeToActionBars() {
 		IActionBars bars = getViewSite().getActionBars();
-		//fillLocalPullDown(bars.getMenuManager());
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-//	private void fillLocalPullDown(IMenuManager manager) {
-//		manager.add(action1);
-//		manager.add(new Separator());
-//	}
-
-//	private void fillContextMenu(IMenuManager manager) {
-//		manager.add(action1);
-//		manager.add(new Separator());
-//		drillDownAdapter.addNavigationActions(manager);
-//		// Other plug-ins can contribute there actions here
-//		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-//	}
-	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
 		manager.add(action2);
