@@ -39,14 +39,11 @@ class SlicesViewContentProvider implements IStructuredContentProvider
 		
 		
 		public Object[] getElements(Object parent) {
-			if(parent.equals(this.slicesView.getViewSite()))
-			{
 				if(this.slicesView == null)
 					return new Object[0];
 				else
 					return new Object[]{this.registreRacine};	
-			}
-			return null;			
+						
 			
 		}
 		

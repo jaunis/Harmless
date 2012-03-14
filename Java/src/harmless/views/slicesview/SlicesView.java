@@ -2,6 +2,7 @@ package harmless.views.slicesview;
 
 import harmless.Activator;
 import harmless.controller.Updater;
+import harmless.exceptions.RegistreNonTrouveException;
 import harmless.views.communs.NameSorter;
 
 import org.eclipse.jface.action.Action;
@@ -71,25 +72,30 @@ public class SlicesView extends ViewPart {
 		exampleTable.setHeaderVisible(true);
 		exampleTable.setLayout(tableLayout);
 		 
-		TableViewer viewer = new TableViewer(exampleTable);
+		viewer = new TableViewer(exampleTable);
 		viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		 
 		TableViewerColumn labelColumn = new TableViewerColumn(viewer, SWT.NONE);
 		labelColumn.getColumn().setText("Label");
 		
-		/*TableViewerColumn valueColumn = new TableViewerColumn(viewer, SWT.NONE);
+		TableViewerColumn valueColumn = new TableViewerColumn(viewer, SWT.NONE);
 		valueColumn.getColumn().setText("Value");
 		EditionSupport editionSupport = new EditionSupport(valueColumn.getViewer(), this);
 		valueColumn.setEditingSupport(editionSupport);
 		
 		TableViewerColumn checkColumn = new TableViewerColumn(viewer, SWT.NONE);
-		labelColumn.getColumn().setText(" ");*/
+		labelColumn.getColumn().setText(" ");
 		
 				 
 		
 		//drillDownAdapter = new DrillDownAdapter(viewer);
-		viewer.setContentProvider(new SlicesViewContentProvider(this, null));
+		try {
+			viewer.setContentProvider(new SlicesViewContentProvider(this, Activator.getDefault().getRegistre("UCSROA")));
+		} catch (RegistreNonTrouveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		viewer.setLabelProvider(new SlicesViewLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());

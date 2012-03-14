@@ -37,14 +37,14 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 	      case 0:
 	        return bla.getId();
 	      case 1:
-	        return "items";
+	        return null;
 	      default:
 	        return "";
 	      }
 	    
 		}
 		
-		return " ";
+		return null;
 	}
 	
 	

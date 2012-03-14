@@ -101,17 +101,22 @@ public class Slice extends BitManager{
 		//return items;
 	//}
 	
-	public Item getItem(String description, int valeur){
+	public Item getItem(int valeur) throws Exception{
 		//on parcourt la liste d'item 
-		int taille = listeItem.size();
-		int repere = 0;
-		for(int k =0; k< taille; k++){
-		
-			if(description == listeItem.get(k).getDescription() && valeur == listeItem.get(k).getValeur()){
-				repere = k;
-			}
+
+		if(listeItem.size() == 0){
+			throw new Exception("liste vide");
 		}
-		return listeItem.get(repere);
+		
+		for(Item i: listeItem){
+			
+			if(i.getValeur() == valeur)
+				return i;
+			
+		}
+		throw new Exception("valeur trouvée");
+		
+		
 	}
 	/**
 	 * @param valeurs the valeurs to set

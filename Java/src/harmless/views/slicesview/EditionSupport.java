@@ -1,5 +1,7 @@
 package harmless.views.slicesview;
 
+import harmless.Activator;
+import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.Register;
 import harmless.model.Slice;
 import harmless.model.Item;
@@ -9,6 +11,7 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -19,17 +22,23 @@ import org.eclipse.swt.widgets.Composite;
 public final class EditionSupport extends EditingSupport {
     
     private ComboBoxViewerCellEditor cellEditor = null;
+    private CheckboxCellEditor check = null;
     private final SlicesView slicesView;
      
     public EditionSupport(ColumnViewer viewer, final SlicesView slicesView) {
         super(viewer);
         this.slicesView = slicesView;
+        
+        //check = new CheckboxCellEditor((Composite) getViewer().getControl(), SWT.PUSH);
+                
+        
+        
         cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
         //cellEditor.setLabelProvider(new LabelProvider());
-        //cellEditor.setContenProvider(new ArrayContentProvider());
+        cellEditor.setContenProvider(new ArrayContentProvider());
         cellEditor.setLabelProvider(new EditionSupportLabelProvider());
-        cellEditor.setContenProvider(new EditionSupportContentProvider());
-        cellEditor.setInput(slicesView.getViewSite());
+        //cellEditor.setContenProvider(new EditionSupportContentProvider());
+        //cellEditor.setInput(slicesView.getViewSite());
         cellEditor.addListener(new ICellEditorListener(){
         	public void editorValueChanged(boolean oldValidState, boolean newValidState) {
         			                if (newValidState)
@@ -50,14 +59,24 @@ public final class EditionSupport extends EditingSupport {
             public void applyEditorValue() {
    	                setErrorText(null); 
       			            }
-        
         });
         
     }
      
     @Override
     protected CellEditor getCellEditor(Object element) {
-        return cellEditor;
+    	//cellEditor
+    	if (element instanceof Slice){
+    		Slice slice = (Slice) element;
+    		if(slice.getListeItem().size() == 0){
+    		return cellEditor;  //precedemment check	
+    		}
+    		else{
+    			return cellEditor;
+    		}
+    	}	
+    		else return null;
+    		    		
     }
      
     @Override
@@ -68,9 +87,16 @@ public final class EditionSupport extends EditingSupport {
     @Override
     //elements qui apparaitront dans la Jcombobox
     protected Object getValue(Object element) {
-        if (element instanceof Item) {
-            Item item = (Item)element;
-            return item;
+        if (element instanceof Slice) {
+            Slice slice = (Slice)element;
+            try {
+             if(((Slice) element).getListeItem().size() == 0) return null;
+             else return slice.getItem(slice.getValeur());
+               } catch (Exception e) {
+            	   // TODO Auto-generated catch block
+            	   e.printStackTrace();
+            	   return null;
+               			}
         }
         return null;
     }
@@ -86,21 +112,6 @@ public final class EditionSupport extends EditingSupport {
     	
     	
     }
-    /*
-    @Override
-    protected void setValue(Object element, Object value) {
-        if (element instanceof Slice && value instanceof Slice) {
-            Slice data = (Slice) element;
-           // Value newValue = (Value) value;
-            Slice newSlice = (Slice) value;
-            /* only set new value if it differs from old one 
-            //if(!data.equals(newSlice);
-            //   data.setSlice(newSlice);
-            //if (!data.getData().equals(newValue)) {
-              //  data.setData(newValue);
-            //}
-        }
-    }*/
     
      
 }
