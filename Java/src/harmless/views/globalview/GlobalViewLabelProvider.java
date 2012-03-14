@@ -28,7 +28,7 @@ class GlobalViewLabelProvider extends LabelProvider
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-		if(columnIndex == 0)
+		if(columnIndex == 0 && !(element instanceof List))
 			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 		else if(element instanceof List<?>)
 		{
@@ -77,29 +77,29 @@ class GlobalViewLabelProvider extends LabelProvider
 			case 0:
 				return myElement.getId();
 			case 1:
-				return "(" + myElement.getAddress() + "):";
-			case 2:
 				return myElement.getValeurHexa();
 			default:
 				return null;
 			}
 		}
-//		else if(element instanceof List<?>)
-//		{
-//			List<Bit> myElement = null;
-//			try
-//			{
-//				myElement = (List<Bit>) element;
-//				if(columnIndex >=1 && columnIndex <= 8)
-//					return myElement.get(8 - columnIndex).toString();
-//				else return null;
-//			}
-//			catch(ClassCastException e)
-//			{
-//				System.err.println("Une liste de bits est attendue.");
-//				e.printStackTrace();
-//			}
-//		}
+		else if(element instanceof List<?>)
+		{
+			try{
+				List<Bit> myElement = (List<Bit>) element;
+				switch(columnIndex)
+				{
+				case 0:
+					return "(" + myElement.get(0).getRegistre().getAddress() + ")";
+				default:
+					return null;
+				}
+			}
+			catch(ClassCastException e)
+			{
+				System.err.println("Une liste de bits est attendue.");
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 }

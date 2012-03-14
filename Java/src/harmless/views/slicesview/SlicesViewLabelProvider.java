@@ -1,14 +1,10 @@
 package harmless.views.slicesview;
 
-import harmless.Activator;
-import harmless.model.Bit;
 import harmless.model.Slice;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -37,7 +33,18 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 	      case 0:
 	        return bla.getId();
 	      case 1:
-	        return null;
+	    	  if(bla.getListeItem().isEmpty())
+	    		  return "";
+			else
+			{
+				try {
+					return bla.getItem(bla.getValeur()).toString();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 	      default:
 	        return "";
 	      }

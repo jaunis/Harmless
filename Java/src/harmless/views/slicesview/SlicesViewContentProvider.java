@@ -1,10 +1,8 @@
 package harmless.views.slicesview;
 
 import harmless.model.Register;
-import harmless.model.Slice;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /*
@@ -39,12 +37,12 @@ class SlicesViewContentProvider implements IStructuredContentProvider
 		
 		
 		public Object[] getElements(Object parent) {
-				if(this.slicesView == null)
-					return new Object[0];
-				else
-					return new Object[]{this.registreRacine};	
-						
 			
+			if(this.slicesView == null)
+				return new Object[0];
+			else
+				//return new Object[]{this.registreRacine};
+				return registreRacine.getListeSlices().toArray();			
 		}
 		
 		/*

@@ -48,7 +48,7 @@ public class BitManager {
 
 	public void setValeur(int valeur) {
 		int puissance = 1;
-		for(int i=0; i<=(Math.log(valeur)/Math.log(2.)); i++)
+		for(int i=0; i<listeBits.size(); i++)
 		{
 			if((puissance & valeur) > 0)
 				listeBits.get(i).setValeur(1);
@@ -57,7 +57,7 @@ public class BitManager {
 		}
 	}
 
-	public void setValeurHexa(String valeurHexa) {
+	public void setValeurHexa(String valeurHexa) throws NumberFormatException {
 		String copie = valeurHexa;
 		if(valeurHexa.startsWith("0x"))
 			copie = valeurHexa.substring(2);
