@@ -16,13 +16,6 @@
             id="harmless.views.GlobalView">
       </view>
       <view
-            name="Màj slices"
-            icon="icons/sample.gif"
-            category="Harmless"
-            class="harmless.views.UpdateSlicesView"
-            id="harmless.views.UpdateSlicesView">
-      </view>
-      <view
             name="Etat slices"
             icon="icons/sample.gif"
             category="Harmless"
