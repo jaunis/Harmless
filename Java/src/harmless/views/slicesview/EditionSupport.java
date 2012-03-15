@@ -1,7 +1,9 @@
 package harmless.views.slicesview;
 
 
+import harmless.Activator;
 import harmless.model.Item;
+import harmless.model.Register;
 import harmless.model.Slice;
 
 import org.eclipse.jface.action.IStatusLineManager;
@@ -28,7 +30,7 @@ public final class EditionSupport extends EditingSupport {
         super(viewer);
         this.slicesView = slicesView;
         
-        //check = new CheckboxCellEditor((Composite) getViewer().getControl(), SWT.PUSH);
+    check = new CheckboxCellEditor((Composite) getViewer().getControl(), SWT.CHECK | SWT.READ_ONLY);
                 
         
         
@@ -82,9 +84,19 @@ public final class EditionSupport extends EditingSupport {
     		    return cellEditor;  	
     		    }
     		     else{
-    			      return check;
+    		    	 System.out.println("bien recu !!!!!!!!!");
+    		    	 check.create((Composite) getViewer().getControl());
+    		    	 //check.activate(ColumnViewerEditorActivationEvent activationEvent);
+    		    	 check.activate();
+    		    	 check.isSelectAllEnabled();
+    		    	 check.isActivated() ;
+    			      return check; //check;
     		         }
     	}	
+    	
+    	//if (element instanceof Slice){
+    		//return new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
+    	//}
     	else return null;
     		    		
     }
@@ -117,6 +129,11 @@ public final class EditionSupport extends EditingSupport {
     		Slice data = (Slice) element;
     		Item newValue = (Item) value;
     	    data.setValeur(newValue.getValeur());
+    	    
+    	    //non acces à un element registre; 
+    	    Activator.getDefault().getUpdater().addMaj((Register)element);
+    		getViewer().refresh();
+    		
     		
     	}
     	

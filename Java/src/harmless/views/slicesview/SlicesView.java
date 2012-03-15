@@ -80,6 +80,7 @@ public class SlicesView extends ViewPart {
 		TableViewerColumn checkColumn = new TableViewerColumn(viewer, SWT.NONE);
 		labelColumn.getColumn().setText(" ");
 		
+		
 				 
 		
 		//drillDownAdapter = new DrillDownAdapter(viewer);
