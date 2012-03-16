@@ -4,6 +4,7 @@ package harmless.views.globalview;
 import harmless.Activator;
 import harmless.controller.Updater;
 import harmless.model.Bit;
+import harmless.model.Peripheral;
 import harmless.model.Register;
 import harmless.views.slicesview.SlicesView;
 
@@ -14,6 +15,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -21,11 +24,13 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
@@ -48,7 +53,8 @@ public class GlobalView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	private List<TreeColumn> listeColonnes;
+	private Action hoverAction;
+	private List<TreeViewerColumn> listeColonnes;
 
 
 
@@ -73,46 +79,100 @@ public class GlobalView extends ViewPart {
 	 */
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		
 		/*
 		 * si l'updater est nul, c'est qu'on a appuyé sur Cancel au lancement
 		 */
 		if(Activator.getDefault().getUpdater() != null)
 		{
 
-			listeColonnes = new ArrayList<TreeColumn>(9);
-//			parent.addControlListener(new ControlAdapter() {
-//		        @Override
-//		        public void controlResized(final ControlEvent e) {
-//		            System.out.println("RESIZE");
-//		            Rectangle rect = GlobalView.this.parent.getClientArea();
-//		            for(TreeColumn tc: listeColonnes)
-//		            {
-//		            	tc.setWidth((rect.width)/(listeColonnes.size()));
-//		            }
-//		        }
-//		    });
-			
+			listeColonnes = new ArrayList<TreeViewerColumn>(9);
+			//activation des bulles d'aide pour le viewer
+			ColumnViewerToolTipSupport.enableFor(viewer);
 			for(int i=0; i<=8; i++)
 			{
 				TreeViewerColumn tvc = new TreeViewerColumn(viewer, SWT.NONE);
+
 				TreeColumn localColumn = tvc.getColumn();
-				if(i==1)
+				localColumn.pack();
+				if(i==0)
 				{
+					localColumn.setWidth(115);
+				}
+				else if(i==1)
+				{
+					localColumn.setWidth(50);
 					GlobalViewEditionSupport editonSupport = new GlobalViewEditionSupport(tvc.getViewer());
 					tvc.setEditingSupport(editonSupport);
 				}
-				localColumn.pack();
-				if(i==0) localColumn.setWidth(115);
-				else if(i==1) localColumn.setWidth(50);
 				else localColumn.setWidth(25);
 				localColumn.setAlignment(SWT.LEFT);
-				listeColonnes.add(localColumn);
+				listeColonnes.add(tvc);
 			}
+					
 			viewer.getTree().setHeaderVisible(true);
 			drillDownAdapter = new DrillDownAdapter(viewer);
 			
 			viewer.setContentProvider(new GlobalViewContentProvider(this));
 			viewer.setLabelProvider(new GlobalViewLabelProvider());
+			
+			/*
+			 * il est important de donner le LabelProvider de la colonne après le LabelProvider
+			 * global; sinon il se fait écraser.
+			 */
+			listeColonnes.get(0).setLabelProvider(new CellLabelProvider(){
+				
+				
+				public int getToolTipDisplayDelayTime(Object object) {
+					return 100;
+				}
+				public int getToolTipTimeDisplayed(Object object) {
+					return 5000;
+				}
+				public Color getToolTipBackgroundColor(Object object) {
+					return Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND);
+				}
+				public String getToolTipText(Object element) {
+					
+					if(element instanceof Register)
+						return ((Register)element).getDescription();
+					else return null;
+				}
+				public boolean useNativeToolTip(Object object) {
+					return false;
+				}
+				
+				/*
+				 * cette méthode est appelée au 1er affichage, on en profite donc pour insérer
+				 * les bons textes et les bonnes images (impossible de le faire dans 
+				 * GlobalViewLabelProvider)
+				 */
+				@Override
+				public void update(ViewerCell cell) {
+					cell.setImage(PlatformUI.getWorkbench()
+							.getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER));
+					Object elem = cell.getElement();
+					if(elem instanceof Peripheral)
+						cell.setText(((Peripheral)elem).getName());
+					else if(elem instanceof Register)
+						cell.setText(((Register)elem).getId());
+					else if(elem instanceof List<?>)
+					{
+						try{
+							cell.setText("(" + 
+								((List<Bit>)elem).get(0).getRegistre().getAddress()
+								 +  ")");
+						}
+						catch(ClassCastException e)
+						{
+							System.err.println("Erreur: une liste de bits est attendue.");
+							e.printStackTrace();
+						}
+					}
+					
+				}
+			});
+			
 			viewer.setSorter(new NameSorter());
 			viewer.setInput(getViewSite());
 			makeActions();
@@ -185,25 +245,44 @@ public class GlobalView extends ViewPart {
 				Point p = Display.getCurrent().getCursorLocation();
 				Point pRelatif = Display.getCurrent().map(null, Display.getCurrent().getCursorControl(), p);
 				ViewerCell cell = viewer.getCell(pRelatif);
-				Object elem = cell.getElement();
-				if(elem instanceof List<?>)
+				if(cell != null)
 				{
-					Bit bit = ((List<Bit>)elem).get(8 - cell.getColumnIndex());
-					bit.setValeur(bit.getValeur()^1);
-					Activator.getDefault().getUpdater().addMaj(bit.getRegistre());
-					viewer.refresh();
-				}
-				else if(elem instanceof Register)
-				{
-					try 
+					Object elem = cell.getElement();
+					if(elem instanceof List<?>)
 					{
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SlicesView.ID);
-					} catch (PartInitException e) {
-						showMessage("Erreur: impossible d'ouvrir la vue " + SlicesView.ID);
-						e.printStackTrace();
+						int position = 8 - cell.getColumnIndex();
+						if(position >= 0 && position < 8)
+						{
+							Bit bit = ((List<Bit>)elem).get(position);
+							bit.setValeur(bit.getValeur()^1);
+							Activator.getDefault().getUpdater().addMaj(bit.getRegistre());
+							viewer.refresh();
+						}
+						
 					}
-					//TODO dire à la vue quel registre afficher
+					else if(elem instanceof Register)
+					{
+						try 
+						{
+							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SlicesView.ID);
+						} catch (PartInitException e) {
+							showMessage("Erreur: impossible d'ouvrir la vue " + SlicesView.ID);
+							e.printStackTrace();
+						}
+						//TODO dire à la vue quel registre afficher
+					}
 				}
+			}
+		};
+		
+		hoverAction = new Action(){
+			public void run()
+			{
+				Point p = Display.getCurrent().getCursorLocation();
+				Point pRelatif = Display.getCurrent().map(null, Display.getCurrent().getCursorControl(), p);
+				ViewerCell cell = viewer.getCell(pRelatif);
+				cell.getControl().setToolTipText("test");
+				cell.getControl().update();
 			}
 		};
 	}

@@ -30,7 +30,7 @@ public final class EditionSupport extends EditingSupport {
         super(viewer);
         this.slicesView = slicesView;
         
-    check = new CheckboxCellEditor((Composite) getViewer().getControl(), SWT.CHECK | SWT.READ_ONLY);
+        check = new CheckboxCellEditor((Composite) getViewer().getControl(), SWT.CHECK | SWT.READ_ONLY);
                 
         
         
@@ -77,21 +77,19 @@ public final class EditionSupport extends EditingSupport {
     @Override
     protected CellEditor getCellEditor(Object element) {
     	//cellEditor
-    	if (element instanceof Slice){
+    	if (element instanceof Slice) {
     		Slice slice = (Slice) element;
     		if(slice.getListeItem().size() != 0){
-    			cellEditor.setInput(((Slice)element).getListeItem());
-    		    return cellEditor;  	
-    		    }
-    		     else{
-    		    	 System.out.println("bien recu !!!!!!!!!");
-    		    	 check.create((Composite) getViewer().getControl());
-    		    	 //check.activate(ColumnViewerEditorActivationEvent activationEvent);
-    		    	 check.activate();
-    		    	 check.isSelectAllEnabled();
-    		    	 check.isActivated() ;
-    			      return check; //check;
-    		         }
+				cellEditor.setInput(((Slice)element).getListeItem());
+			    return cellEditor;  	
+		    }
+    		else {
+		    	 System.out.println("bien recu !!!!!!!!!");
+		    	 check.create((Composite) getViewer().getControl());
+		    	 //check.activate(ColumnViewerEditorActivationEvent activationEvent);
+		    	 check.activate();
+			     return check; //check;
+	         }
     	}	
     	
     	//if (element instanceof Slice){
@@ -112,7 +110,7 @@ public final class EditionSupport extends EditingSupport {
         if (element instanceof Slice) {
             Slice slice = (Slice)element;
             try {
-            	if(((Slice) element).getListeItem().size() == 0) return null;
+            	if(slice.getListeItem().size() == 0) return (slice.getValeur() > 0);
             	else return slice.getItem(slice.getValeur());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -136,8 +134,6 @@ public final class EditionSupport extends EditingSupport {
     		
     		
     	}
-    	
-    	
     }
     
      
