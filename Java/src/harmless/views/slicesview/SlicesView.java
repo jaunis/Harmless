@@ -3,11 +3,9 @@ package harmless.views.slicesview;
 import harmless.Activator;
 import harmless.controller.Updater;
 import harmless.exceptions.RegistreNonTrouveException;
-import harmless.model.Bit;
 import harmless.model.BitManager;
 import harmless.model.Register;
 import harmless.model.Slice;
-import harmless.views.communs.NameSorter;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -97,7 +95,6 @@ try {
 			e.printStackTrace();
 		}
 		viewer.setLabelProvider(new SlicesViewLabelProvider());
-		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
         
 

@@ -172,7 +172,7 @@ public class GlobalView extends ViewPart {
 				}
 			});
 			
-			viewer.setSorter(new NameSorter());
+//			viewer.setSorter(new NameSorter());
 			viewer.setInput(getViewSite());
 			makeActions();
 			hookDoubleClickAction();
