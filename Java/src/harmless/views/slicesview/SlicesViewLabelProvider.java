@@ -1,10 +1,15 @@
 package harmless.views.slicesview;
 
+import harmless.Activator;
+import harmless.model.Bit;
+import harmless.model.BitManager;
 import harmless.model.Slice;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -20,9 +25,9 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 	}
 	@Override
 	
-	public Image getColumnImage(Object element, int columnIndex){
+	/*public Image getColumnImage(Object element, int columnIndex){
 		return null;		
-	}
+	}*/
 	
 	
 	public String getColumnText(Object element, int columnIndex){
@@ -56,34 +61,39 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 	
 	
 	
-	/*public Image getColumnImage(Object element, int columnIndex) {
+	public Image getColumnImage(Object element, int columnIndex) {
 		String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-		if(columnIndex == 0)
-			return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
-		else if(element instanceof List<?>)
-		{
-			List<Bit> myElement = null;
-			try
-			{
-				ImageDescriptor descriptor = null;
-				myElement = (List<Bit>) element;
-				if(columnIndex >=1 && columnIndex <= 8)
-				{
-					descriptor = (myElement.get(8 - columnIndex).getValeur()==0?
-								Activator.getImageDescriptor("bit_off.png"):
-								Activator.getImageDescriptor("bit_on.png"));
+		
+		
+		if(columnIndex == 1){
+			if(element instanceof Slice){
+			   Slice bla = (Slice) element;
+			   //presence d'une image carre noir si et seulement si il n y a pas d item pour ce slice
+			   if(((Slice) element).getListeItem().size() ==0){
+				   //Un Slice est un BitManager par polymorphisme et heritage
+				   //Si la liste de slice est vide, le slice represente un bit, par consequent on a acces à cette valeur en regardant
+				   //la valeur de l'objet BitManager
+				   BitManager bloup = (BitManager) bla;
+				   
+				   ImageDescriptor descriptor = null;
+				   descriptor =  bloup.getValeur() == 0 ?
+						        Activator.getImageDescriptor("bit_off.png"):
+								Activator.getImageDescriptor("bit_on.png");
 					return descriptor.createImage();
-				}
-				else return null;
-			}
-			catch(ClassCastException e)
-			{
-				System.err.println("Une liste de bits est attendue.");
-				e.printStackTrace();
-			}
-		}
+				                                              }	
+			                             }
+		                       }
 		return null;
-	}*/
+	}
+	
+	
+	
+	
+	
+}
+		
+		
+
 	
 	/*
 	@Override
@@ -110,4 +120,3 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 		}
 		return null;
 	}*/
-}

@@ -45,39 +45,11 @@ class SlicesViewContentProvider implements IStructuredContentProvider
 				return registreRacine.getListeSlices().toArray();			
 		}
 		
-		/*
-		public Object[] getElements(Object parent) {
-			if(parent.equals(this.slicesView.getViewSite()))
-			{
-				if(this.slicesView == null)
-					return new Object[0];
-				else
-					return new Object[]{this.registreRacine};
-			}
-			return getChildren(parent);
-		}*/
 		
-		
-		/*
-		public Object getParent(Object child) {
-			if(child instanceof Register)
-				return null;
-			else if(child instanceof Slice)
-				return ((Slice)child).getRegistre();
-			else
-				return null;
+		public void setRegistre(Register registre){
+			registreRacine = registre;
+			
 		}
-		public Object [] getChildren(Object parent) {
-			if (parent instanceof Register) 
-				return ((Register)parent).getListeSlices().toArray();
-			return new Object[0];
-		}
-		public boolean hasChildren(Object parent) {
-			if (parent instanceof Register)
-				return !((Register)parent).getListeSlices().isEmpty();
-			else if(parent.equals(this.slicesView.getViewSite()))
-					return true;
-			return false;
-		}*/
+	
 		
 	}

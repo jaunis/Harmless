@@ -3,6 +3,10 @@ package harmless.views.slicesview;
 import harmless.Activator;
 import harmless.controller.Updater;
 import harmless.exceptions.RegistreNonTrouveException;
+import harmless.model.Bit;
+import harmless.model.BitManager;
+import harmless.model.Register;
+import harmless.model.Slice;
 import harmless.views.communs.NameSorter;
 
 import org.eclipse.jface.action.Action;
@@ -15,14 +19,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IActionBars;
@@ -39,9 +44,11 @@ public class SlicesView extends ViewPart {
 	public static final String ID = "harmless.views.SlicesView";
 
 	private TableViewer viewer;
-	//private DrillDownAdapter drillDownAdapter;
 	private Action action1;
 	private Action doubleClickAction;
+	//private Slice slice;
+	//pour un slice donne, on associe un slicesView
+	
 
 
 	/**
@@ -82,9 +89,8 @@ public class SlicesView extends ViewPart {
 		
 		
 				 
-		
-		//drillDownAdapter = new DrillDownAdapter(viewer);
 try {
+	//viewer.setContentProvider(new SlicesViewContentProvider(this, slice.getRegistre()));
 	viewer.setContentProvider(new SlicesViewContentProvider(this, Activator.getDefault().getRegistre("UCSR0C")));
 		} catch (RegistreNonTrouveException e) {
 			// TODO Auto-generated catch block
@@ -155,9 +161,31 @@ try {
 		
 		doubleClickAction = new Action() {
 			public void run() {
+				
+				Point p = Display.getCurrent().getCursorLocation();
+				Point pRelatif = Display.getCurrent().map(null, Display.getCurrent().getCursorControl(), p);
+				ViewerCell cell = viewer.getCell(pRelatif);
+				Object elem = cell.getElement();
+				if(elem instanceof Slice){
+					Slice slice = (Slice) elem;
+					//je n'autorise une action par double clique que pour un objet slice, pour lequel il n a pas d item
+					if(slice.getListeItem().size() == 0){
+						BitManager bitmanage = (BitManager) slice;
+						//conversion de slice en element de sa classe mere
+						bitmanage.getListeBits().get(0).setValeur(1 - bitmanage.getListeBits().get(0).getValeur());
+						//ainsi si le bit vaut 0 il vaut 1 et inversement
+						//bitmanage.getListeBits().get(0); est un objet Bit
+						Activator.getDefault().getUpdater().addMaj(bitmanage.getListeBits().get(0).getRegistre());
+						viewer.refresh();
+						
+						
+					}
+				}
+				
+				/*
 				ISelection selection = viewer.getSelection();
 				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());
+				showMessage("Double-click detected on "+obj.toString());*/
 			}
 		};
 	}
@@ -182,6 +210,12 @@ try {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+	
+	public void setRegistre(Register registre){
+		SlicesViewContentProvider cp = (SlicesViewContentProvider)viewer.getContentProvider();
+		cp.setRegistre(registre);
+	}
+	
 	
 	public TableViewer getViewer()
 	{

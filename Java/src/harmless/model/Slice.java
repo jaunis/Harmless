@@ -18,7 +18,6 @@ public class Slice extends BitManager{
 	private boolean readOnly;
 	private List<Range> listeRanges;
 	private Register registre;
-	//private Hashtable<Integer, String> items;
 	private List<Item> listeItem;
 	
 	public Slice(String id, String description,	Register registre) 
@@ -28,7 +27,6 @@ public class Slice extends BitManager{
 		this.description = description;
 		this.registre = registre;
 		readOnly = false;
-		//items = new Hashtable<Integer, String>();
 		listeItem = new ArrayList<Item>();
 		listeRanges = new ArrayList<Range>();
 	}
@@ -96,10 +94,7 @@ public class Slice extends BitManager{
 	/**
 	 * @return the valeurs
 	 * @throws Exception 
-	 */
-	//public Hashtable<Integer, String> getItems() {
-		//return items;
-	//}
+	*/
 	
 	public Item getItem(int valeur) throws Exception{
 		//on parcourt la liste d'item 
@@ -116,9 +111,7 @@ public class Slice extends BitManager{
 	/**
 	 * @param valeurs the valeurs to set
 	 */
-	//public void setItems(Hashtable<Integer, String> items) {
-		//this.items = items;
-	//}
+
 	
 	public void setItem(ArrayList<Item> item){
 		this.listeItem = item;
