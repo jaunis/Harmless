@@ -6,6 +6,7 @@ import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.BitManager;
 import harmless.model.Register;
 import harmless.model.Slice;
+import harmless.views.globalview.GlobalView;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -122,6 +124,9 @@ public class SlicesView extends ViewPart {
 				updater.demanderReception();
 				while(!updater.majRecue());
 				viewer.refresh();
+				((GlobalView)PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
+						.findView(GlobalView.ID)).getViewer().refresh();
 			}
 		};
 		action1.setText("Mettre à jour");
@@ -146,7 +151,9 @@ public class SlicesView extends ViewPart {
 						//bitmanage.getListeBits().get(0); est un objet Bit
 						Activator.getDefault().getUpdater().addMaj(bitmanage.getListeBits().get(0).getRegistre());
 						viewer.refresh();
-						
+						((GlobalView)PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getActivePage()
+								.findView(GlobalView.ID)).getViewer().refresh();
 						
 					}
 				}

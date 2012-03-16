@@ -213,6 +213,9 @@ public class GlobalView extends ViewPart {
 					updater.demanderReception();
 					while(!updater.majRecue());
 					viewer.refresh();
+					((SlicesView)PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage()
+							.findView(SlicesView.ID)).getViewer().refresh();
 				}
 			}
 		};
@@ -257,6 +260,9 @@ public class GlobalView extends ViewPart {
 							bit.setValeur(bit.getValeur()^1);
 							Activator.getDefault().getUpdater().addMaj(bit.getRegistre());
 							viewer.refresh();
+							((SlicesView)PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow().getActivePage()
+									.findView(SlicesView.ID)).getViewer().refresh();
 						}
 						
 					}
@@ -269,24 +275,15 @@ public class GlobalView extends ViewPart {
 							SlicesView slicesView = (SlicesView)activePage.findView(SlicesView.ID);
 							slicesView.setRegistre((Register)elem);
 							slicesView.getViewer().refresh();
+							((SlicesView)PlatformUI.getWorkbench()
+									.getActiveWorkbenchWindow().getActivePage()
+									.findView(SlicesView.ID)).getViewer().refresh();
 						} catch (PartInitException e) {
 							showMessage("Erreur: impossible d'ouvrir la vue " + SlicesView.ID);
 							e.printStackTrace();
 						}
-						//TODO dire à la vue quel registre afficher
 					}
 				}
-			}
-		};
-		
-		new Action(){
-			public void run()
-			{
-				Point p = Display.getCurrent().getCursorLocation();
-				Point pRelatif = Display.getCurrent().map(null, Display.getCurrent().getCursorControl(), p);
-				ViewerCell cell = viewer.getCell(pRelatif);
-				cell.getControl().setToolTipText("test");
-				cell.getControl().update();
 			}
 		};
 	}
@@ -299,6 +296,11 @@ public class GlobalView extends ViewPart {
 			}
 		});
 	}
+	
+	/**
+	 * Méthode affichant une alerte contenant le message passé en paramètre
+	 * @param message
+	 */
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
@@ -312,7 +314,10 @@ public class GlobalView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
-
+	
+	/**
+	 * Méthode appelée à la fermeture de la vue
+	 */
 	public void dispose()
 	{
 		Activator activator = Activator.getDefault();
@@ -332,6 +337,5 @@ public class GlobalView extends ViewPart {
 		}
 			
 		super.dispose();
-		
 	}
 }

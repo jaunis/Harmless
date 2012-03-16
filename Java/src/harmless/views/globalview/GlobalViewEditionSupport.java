@@ -2,6 +2,7 @@ package harmless.views.globalview;
 
 import harmless.Activator;
 import harmless.model.Register;
+import harmless.views.slicesview.SlicesView;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
@@ -10,6 +11,7 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 
 public class GlobalViewEditionSupport extends EditingSupport{
 
@@ -47,6 +49,9 @@ public class GlobalViewEditionSupport extends EditingSupport{
     			((Register)element).setValeurHexa((String)value);
     			Activator.getDefault().getUpdater().addMaj((Register)element);
         		getViewer().refresh();
+        		((SlicesView)PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
+						.findView(SlicesView.ID)).getViewer().refresh();
     		}
     		catch(NumberFormatException e)
     		{
