@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
@@ -263,7 +264,11 @@ public class GlobalView extends ViewPart {
 					{
 						try 
 						{
-							PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SlicesView.ID);
+							IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+							activePage.showView(SlicesView.ID);
+							SlicesView slicesView = (SlicesView)activePage.findView(SlicesView.ID);
+							slicesView.setRegistre((Register)elem);
+							slicesView.getViewer().refresh();
 						} catch (PartInitException e) {
 							showMessage("Erreur: impossible d'ouvrir la vue " + SlicesView.ID);
 							e.printStackTrace();

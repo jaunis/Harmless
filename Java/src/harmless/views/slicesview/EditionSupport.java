@@ -26,7 +26,7 @@ public final class EditionSupport extends EditingSupport {
         this.slicesView = slicesView;
 
         
-        cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.NONE);
+        cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
         cellEditor.setContenProvider(new ArrayContentProvider());
         
     }
