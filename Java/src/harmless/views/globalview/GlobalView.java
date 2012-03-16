@@ -53,7 +53,6 @@ public class GlobalView extends ViewPart {
 	private Action action1;
 	private Action action2;
 	private Action doubleClickAction;
-	private Action hoverAction;
 	private List<TreeViewerColumn> listeColonnes;
 
 
@@ -275,7 +274,7 @@ public class GlobalView extends ViewPart {
 			}
 		};
 		
-		hoverAction = new Action(){
+		new Action(){
 			public void run()
 			{
 				Point p = Display.getCurrent().getCursorLocation();
