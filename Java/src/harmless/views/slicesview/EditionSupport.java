@@ -5,6 +5,7 @@ import harmless.Activator;
 import harmless.model.Item;
 import harmless.model.Register;
 import harmless.model.Slice;
+import harmless.model.Bit;
 
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -22,17 +23,12 @@ public final class EditionSupport extends EditingSupport {
     
     private ComboBoxViewerCellEditor cellEditor = null;
 
-    private CheckboxCellEditor check = null;
-
     private SlicesView slicesView;
      
 	public EditionSupport(ColumnViewer viewer, SlicesView slicesView) {
         super(viewer);
         this.slicesView = slicesView;
-        
-    check = new CheckboxCellEditor((Composite) getViewer().getControl(), SWT.CHECK | SWT.READ_ONLY);
-                
-        
+          
         
         cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
         //cellEditor.setLabelProvider(new LabelProvider());
@@ -76,28 +72,15 @@ public final class EditionSupport extends EditingSupport {
      
     @Override
     protected CellEditor getCellEditor(Object element) {
-    	//cellEditor
+    	
     	if (element instanceof Slice){
     		Slice slice = (Slice) element;
     		if(slice.getListeItem().size() != 0){
     			cellEditor.setInput(((Slice)element).getListeItem());
     		    return cellEditor;  	
     		    }
-    		     else{
-    		    	 System.out.println("bien recu !!!!!!!!!");
-    		    	 check.create((Composite) getViewer().getControl());
-    		    	 //check.activate(ColumnViewerEditorActivationEvent activationEvent);
-    		    	 check.activate();
-    		    	 check.isSelectAllEnabled();
-    		    	 check.isActivated() ;
-    			      return check; //check;
-    		         }
-    	}	
-    	
-    	//if (element instanceof Slice){
-    		//return new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
-    	//}
-    	else return null;
+    	     }
+    	return null;
     		    		
     }
      
@@ -129,9 +112,8 @@ public final class EditionSupport extends EditingSupport {
     		Slice data = (Slice) element;
     		Item newValue = (Item) value;
     	    data.setValeur(newValue.getValeur());
-    	    
-    	    //non acces à un element registre; 
-    	    Activator.getDefault().getUpdater().addMaj((Register)element);
+    	     
+    	    Activator.getDefault().getUpdater().addMaj(((Slice)element).getRegistre());
     		getViewer().refresh();
     		
     		
