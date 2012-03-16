@@ -8,10 +8,7 @@ import harmless.model.Register;
 import harmless.model.Slice;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -26,10 +23,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -82,14 +77,14 @@ public class SlicesView extends ViewPart {
 		EditionSupport editionSupport = new EditionSupport(valueColumn.getViewer(), this);
 		valueColumn.setEditingSupport(editionSupport);
 		
-		TableViewerColumn checkColumn = new TableViewerColumn(viewer, SWT.NONE);
-		labelColumn.getColumn().setText(" ");
+//		TableViewerColumn checkColumn = new TableViewerColumn(viewer, SWT.NONE);
+//		labelColumn.getColumn().setText(" ");
 		
 		
 				 
-try {
-	//viewer.setContentProvider(new SlicesViewContentProvider(this, slice.getRegistre()));
-	viewer.setContentProvider(new SlicesViewContentProvider(this, Activator.getDefault().getRegistre("UCSR0C")));
+		try {
+			//viewer.setContentProvider(new SlicesViewContentProvider(this, slice.getRegistre()));
+			viewer.setContentProvider(new SlicesViewContentProvider(this, Activator.getDefault().getRegistre("UCSR0C")));
 		} catch (RegistreNonTrouveException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,43 +94,20 @@ try {
         
 
 		makeActions();
-		hookContextMenu();
 		hookDoubleClickAction();
 		contributeToActionBars();
 		Activator.getDefault().getUpdater().signalerOuverture();
 	}
 
-	private void hookContextMenu() {
-		MenuManager menuMgr = new MenuManager("#PopupMenu");
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				SlicesView.this.fillContextMenu(manager);
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, viewer);
-	}
 
 	private void contributeToActionBars() {
 		IActionBars bars = getViewSite().getActionBars();
-		fillLocalPullDown(bars.getMenuManager());
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(new Separator());
-	}
 
-	private void fillContextMenu(IMenuManager manager) {
-		manager.add(action1);
-		manager.add(new Separator());
-		//drillDownAdapter.addNavigationActions(manager);
-		// Other plug-ins can contribute there actions here
-		manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-	}
+
+
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
@@ -197,7 +169,7 @@ try {
 	private void showMessage(String message) {
 		MessageDialog.openInformation(
 			viewer.getControl().getShell(),
-			"Vue globale",
+			"Vue des slices",
 			message);
 	}
 

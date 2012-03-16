@@ -22,24 +22,15 @@ public final class EditionSupport extends EditingSupport {
 
     private SlicesView slicesView;
      
+	@SuppressWarnings("deprecation")
 	public EditionSupport(ColumnViewer viewer, SlicesView slicesView) {
         super(viewer);
         this.slicesView = slicesView;
 
         
-        cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
-        //cellEditor.setLabelProvider(new LabelProvider());
+        cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.NONE);
         cellEditor.setContenProvider(new ArrayContentProvider());
-        cellEditor.setLabelProvider(new EditionSupportLabelProvider());
-        //cellEditor.setContenProvider(new EditionSupportContentProvider());
 
-        //cellEditor.setInput(slicesView.getViewSite());
-//        try {
-//			cellEditor.setInput(Activator.getDefault().getRegistre("UCSR0A"));
-//		} catch (RegistreNonTrouveException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
         
         cellEditor.addListener(new ICellEditorListener(){
         	public void editorValueChanged(boolean oldValidState, boolean newValidState) {
@@ -69,8 +60,6 @@ public final class EditionSupport extends EditingSupport {
      
     @Override
     protected CellEditor getCellEditor(Object element) {
-
-    	
     	if (element instanceof Slice){
     		Slice slice = (Slice) element;
     		if(slice.getListeItem().size() != 0){
@@ -78,8 +67,7 @@ public final class EditionSupport extends EditingSupport {
     		    return cellEditor;  	
     		    }
     	     }
-    	return null;
-    		    		
+    	return null;    		
     }
      
     @Override
@@ -112,9 +100,7 @@ public final class EditionSupport extends EditingSupport {
     	    data.setValeur(newValue.getValeur());
     	     
     	    Activator.getDefault().getUpdater().addMaj(((Slice)element).getRegistre());
-    		getViewer().refresh();
-    		
-    		
+    		getViewer().refresh();    		
     	}
     }
     
