@@ -5,13 +5,11 @@ import harmless.Activator;
 import harmless.model.Item;
 import harmless.model.Slice;
 
-import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
-import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -30,31 +28,6 @@ public final class EditionSupport extends EditingSupport {
         
         cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.NONE);
         cellEditor.setContenProvider(new ArrayContentProvider());
-
-        
-        cellEditor.addListener(new ICellEditorListener(){
-        	public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-        			                if (newValidState)
-        			                    setErrorText(null);
-        			                else
-        			                    setErrorText("error");
-        			                
-        			            }
-
-        	 public void cancelEditor() {
-                   setErrorText(null);
-        			            }
-
-            private void setErrorText(String text) {
-            IStatusLineManager lineManager = EditionSupport.this.slicesView.getViewSite().getActionBars().getStatusLineManager();
-              lineManager.setErrorMessage(text);
-        			            }
-            
-            public void applyEditorValue() {
-   	                setErrorText(null); 
-   	                EditionSupport.this.slicesView.getViewer().refresh();
-      			            }
-        });
         
     }
      
