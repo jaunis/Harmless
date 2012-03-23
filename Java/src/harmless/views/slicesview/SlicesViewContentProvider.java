@@ -17,39 +17,38 @@ import org.eclipse.jface.viewers.Viewer;
 
 
 class SlicesViewContentProvider implements IStructuredContentProvider
-//,ITreeContentProvider
    {
 		/**
-		 * 
-		 */
-		private final SlicesView slicesView;
-		private Register registreRacine;
-		
-		public SlicesViewContentProvider(SlicesView slicesView, Register registre)
-		{
-			this.slicesView = slicesView;
-			this.registreRacine = registre;
-		}
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-		public void dispose() {
-		}
-		
-		
-		public Object[] getElements(Object parent) {
-			
-			if(this.slicesView == null)
-				return new Object[0];
-			else
-				//return new Object[]{this.registreRacine};
-				return registreRacine.getListeSlices().toArray();			
-		}
-		
-		
-		public void setRegistre(Register registre){
-			registreRacine = registre;
-			
-		}
+	 * 
+	 */
+	private final SlicesView slicesView;
+	private Register registreRacine;
 	
+	public SlicesViewContentProvider(SlicesView slicesView, Register registre)
+	{
+		this.slicesView = slicesView;
+		this.registreRacine = registre;
+	}
+	public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+	}
+	public void dispose() {
+	}
+	
+	
+	public Object[] getElements(Object parent) {
+		
+		if(this.slicesView == null||registreRacine == null)
+			return new Object[0];
+		else
+			//return new Object[]{this.registreRacine};
+			return registreRacine.getListeSlices().toArray();			
+	}
+	
+	
+	public void setRegistre(Register registre){
+		registreRacine = registre;
 		
 	}
+
+	
+}

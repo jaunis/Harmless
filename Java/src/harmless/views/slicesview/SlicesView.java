@@ -43,6 +43,8 @@ public class SlicesView extends ViewPart {
 	private Action doubleClickAction;
 	//private Slice slice;
 	//pour un slice donne, on associe un slicesView
+
+	private Action action2;
 	
 
 
@@ -78,19 +80,10 @@ public class SlicesView extends ViewPart {
 		valueColumn.getColumn().setText("Value");
 		EditionSupport editionSupport = new EditionSupport(valueColumn.getViewer(), this);
 		valueColumn.setEditingSupport(editionSupport);
-		
-//		TableViewerColumn checkColumn = new TableViewerColumn(viewer, SWT.NONE);
-//		labelColumn.getColumn().setText(" ");
-		
+			
 		
 				 
-		try {
-			//viewer.setContentProvider(new SlicesViewContentProvider(this, slice.getRegistre()));
-			viewer.setContentProvider(new SlicesViewContentProvider(this, Activator.getDefault().getRegistre("UCSR0C")));
-		} catch (RegistreNonTrouveException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		viewer.setContentProvider(new SlicesViewContentProvider(this, null));
 		viewer.setLabelProvider(new SlicesViewLabelProvider());
 		viewer.setInput(getViewSite());
         
@@ -113,25 +106,55 @@ public class SlicesView extends ViewPart {
 	
 	private void fillLocalToolBar(IToolBarManager manager) {
 		manager.add(action1);
+		manager.add(action2);
 		manager.add(new Separator());
-		//drillDownAdapter.addNavigationActions(manager);
 	}
 
 	private void makeActions() {
 		action1 = new Action() {
 			public void run() {
-				Updater updater = Activator.getDefault().getUpdater();
-				updater.demanderReception();
-				while(!updater.majRecue());
-				viewer.refresh();
-				((GlobalView)PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage()
-						.findView(GlobalView.ID)).getViewer().refresh();
+				boolean cont = true;
+				if(!Activator.getDefault().getUpdater().majEnvoyee())
+				{
+					cont = MessageDialog.openConfirm(viewer.getControl().getShell(), 
+							"Mise à jour", 
+							"Ceci écrasera les modifications non envoyées." + 
+							"Etes-vous sûr de vouloir continuer?");
+				}
+				if(cont)
+				{
+					Updater updater = Activator.getDefault().getUpdater();
+					updater.demanderReception();
+					while(!updater.majRecue());
+					viewer.refresh();
+					((GlobalView)PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage()
+							.findView(GlobalView.ID)).getViewer().refresh();
+				}
 			}
 		};
 		action1.setText("Mettre à jour");
 		action1.setToolTipText("Demande au serveur le nouvel état du processeur");
 		action1.setImageDescriptor(Activator.getImageDescriptor("refresh.gif"));
+		
+		action2 = new Action(){
+			public void run()
+			{
+				Updater updater = Activator.getDefault().getUpdater();
+				if(updater.majEnvoyee())
+					System.out.println("Aucune mise à jour à envoyer.");
+				else
+				{
+					updater.demanderEnvoi();
+					while(!updater.majEnvoyee());
+					System.out.println("Maj envoyée.");
+				}
+			}
+		};
+		
+		action2.setText("Envoyer les modifications.");
+		action2.setToolTipText("Envoi au serveur les modifications effectuées localement");
+		action2.setImageDescriptor(Activator.getImageDescriptor("send.gif"));
 		
 		doubleClickAction = new Action() {
 			public void run() {
@@ -157,11 +180,6 @@ public class SlicesView extends ViewPart {
 						
 					}
 				}
-				
-				/*
-				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				showMessage("Double-click detected on "+obj.toString());*/
 			}
 		};
 	}
@@ -173,13 +191,6 @@ public class SlicesView extends ViewPart {
 			}
 		});
 	}
-	private void showMessage(String message) {
-		MessageDialog.openInformation(
-			viewer.getControl().getShell(),
-			"Vue des slices",
-			message);
-	}
-
 	/**
 	 * Passing the focus request to the viewer's control.
 	 */
