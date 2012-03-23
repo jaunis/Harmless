@@ -2,7 +2,6 @@ package harmless.views.slicesview;
 
 import harmless.Activator;
 import harmless.controller.Updater;
-import harmless.exceptions.RegistreNonTrouveException;
 import harmless.model.BitManager;
 import harmless.model.Register;
 import harmless.model.Slice;
@@ -78,7 +77,7 @@ public class SlicesView extends ViewPart {
 		
 		TableViewerColumn valueColumn = new TableViewerColumn(viewer, SWT.NONE);
 		valueColumn.getColumn().setText("Value");
-		EditionSupport editionSupport = new EditionSupport(valueColumn.getViewer(), this);
+		EditionSupport editionSupport = new EditionSupport(valueColumn.getViewer());
 		valueColumn.setEditingSupport(editionSupport);
 			
 		

@@ -1,8 +1,5 @@
 package harmless.views.slicesview;
 
-import harmless.model.Register;
-import harmless.model.Slice;
-
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

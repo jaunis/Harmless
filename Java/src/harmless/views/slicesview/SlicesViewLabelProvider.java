@@ -1,7 +1,6 @@
 package harmless.views.slicesview;
 
 import harmless.Activator;
-import harmless.model.Bit;
 import harmless.model.BitManager;
 import harmless.model.Slice;
 
@@ -9,7 +8,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
@@ -23,11 +21,6 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 		String imageKey = ISharedImages.IMG_OBJ_FOLDER;
 		return PlatformUI.getWorkbench().getSharedImages().getImage(imageKey);
 	}
-	@Override
-	
-	/*public Image getColumnImage(Object element, int columnIndex){
-		return null;		
-	}*/
 	
 	
 	public String getColumnText(Object element, int columnIndex){
@@ -62,9 +55,6 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 	
 	
 	public Image getColumnImage(Object element, int columnIndex) {
-		String imageKey = ISharedImages.IMG_OBJ_FOLDER;
-		
-		
 		if(columnIndex == 1){
 			if(element instanceof Slice){
 			   Slice bla = (Slice) element;
@@ -84,39 +74,5 @@ class SlicesViewLabelProvider extends LabelProvider implements ITableLabelProvid
 			                             }
 		                       }
 		return null;
-	}
-	
-	
-	
-	
-	
+	}	
 }
-		
-		
-
-	
-	/*
-	@Override
-	public String getColumnText(Object element, int columnIndex) {
-		if(element instanceof Register)
-		{
-			Register myElement = (Register) element;
-			switch(columnIndex)
-			{
-			case 0:
-				return myElement.getId();
-			case 1:
-				return "(" + myElement.getAddress() + "):";
-			case 2:
-				return myElement.getValeurHexa();
-			default:
-				return null;
-			}
-		}
-		else if(element instanceof Slice)
-		{
-			Slice myElement = (Slice) element;
-//			switch
-		}
-		return null;
-	}*/

@@ -20,12 +20,10 @@ public final class EditionSupport extends EditingSupport {
     
     private ComboBoxViewerCellEditor cellEditor = null;
 
-    private SlicesView slicesView;
      
 	@SuppressWarnings("deprecation")
-	public EditionSupport(ColumnViewer viewer, SlicesView slicesView) {
+	public EditionSupport(ColumnViewer viewer) {
         super(viewer);
-        this.slicesView = slicesView;
 
         
         cellEditor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
